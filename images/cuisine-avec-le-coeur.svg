@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1452" height="1002" viewBox="0 0 726 501" fill="none">
+  <title>Cuisiné avec le cœur — La saison à partager</title>
+  <desc>Composition vectorielle sur fond transparent. Formes et textes éditables.</desc>
+  <defs>
+    <radialGradient id="ivoire"><stop stop-color="#fffef4"/><stop offset="1" stop-color="#faf9ef"/></radialGradient>
+    <g id="fleur"><circle cy="-18.8" r="11.2"/><circle cx="17.9" cy="-5.8" r="11.2"/><circle cx="11.1" cy="15.2" r="11.2"/><circle cx="-11.1" cy="15.2" r="11.2"/><circle cx="-17.9" cy="-5.8" r="11.2"/></g>
+  </defs>
+  <g id="assiette">
+    <circle cx="372" cy="252" r="155" fill="#f8f7ed"/>
+    <circle cx="372" cy="252" r="125" stroke="#e6e4d7" stroke-width="5"/>
+    <circle cx="372" cy="252" r="123.5" stroke="#d4d4c7" stroke-width="2"/>
+    <circle cx="372" cy="252" r="104" fill="url(#ivoire)"/>
+    <circle cx="372" cy="252" r="100" stroke="#d9d8c8" stroke-width="5"/>
+    <circle cx="372" cy="252" r="97" stroke="#eeede0"/>
+    <circle cx="372" cy="252" r="104.5" stroke="#c9c8b6" stroke-width=".7" stroke-dasharray="2.2 3.8"/>
+  </g>
+  <g id="fleur-centrale" transform="translate(372 232.5)" fill="#d9815b"><circle cx="0" cy="-18.8" r="11.2"/><circle cx="17.9" cy="-5.8" r="11.2"/><circle cx="11.1" cy="15.2" r="11.2"/><circle cx="-11.1" cy="15.2" r="11.2"/><circle cx="-17.9" cy="-5.8" r="11.2"/><circle r="9.5" fill="#fffdf1"/></g>
+  <g id="texte-assiette" fill="#3c5139" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="600" text-anchor="middle" letter-spacing="1.7">
+    <text x="372" y="290">CUISINÉ AVEC</text><text x="372" y="303">LE CŒUR</text>
+  </g>
+  <g id="texte-saison" transform="translate(601 120) rotate(9)" fill="#eca680" font-family="Arial, Helvetica, sans-serif">
+    <text font-size="9" letter-spacing="2">LA SAISON</text><text y="17" font-size="12" font-weight="700" letter-spacing="1.8">À PARTAGER</text>
+  </g>
+  <g id="asterisque" transform="translate(28 394)" stroke="#d9815b" stroke-width="3"><path d="M-7.5-18.5 7.5 18.5 M7.5-18.5-7.5 18.5 M-18.5-7.5 18.5 7.5 M-18.5 7.5 18.5-7.5"/></g>
+  <g id="petite-fleur" transform="translate(637 417) scale(.61)" fill="#d38a66"><circle cx="0" cy="-18.8" r="11.2"/><circle cx="17.9" cy="-5.8" r="11.2"/><circle cx="11.1" cy="15.2" r="11.2"/><circle cx="-11.1" cy="15.2" r="11.2"/><circle cx="-17.9" cy="-5.8" r="11.2"/><circle r="8.4" fill="#43533a"/></g>
+</svg>

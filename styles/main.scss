@@ -127,6 +127,289 @@ footer a:not(.btn):hover {
     color: $secondary;
 }
 
+/* HERO — MOBILE */
+
+.hero {
+    position: relative;
+    min-height: 570px;
+    display: block;
+    padding: 40px 24px 160px;
+    background: $primary;
+    overflow: hidden;
+}
+
+/* Le texte reste devant l'illustration. */
+.hero-content {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+}
+
+.eyebrow {
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    color: $stone;
+}
+
+.hero .eyebrow {
+    color: $secondary;
+}
+
+.eyebrow i {
+    display: inline-block;
+}
+
+.hero h1 {
+    font: 500 clamp(45px, 5vw, 69px) / 1.04 $font-family-serif;
+    letter-spacing: -1.2px;
+    margin: 26px 0 17px;
+}
+
+.hero h1 em,
+h2 em {
+    font-weight: 500;
+    color: $secondary;
+}
+
+.hero-content > p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: $marble;
+    max-width: 405px;
+    margin: 0 0 25px;
+}
+
+.hero-note {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 40px;
+    color: $marble;
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.hero-note b {
+    font: 500 25px $font-family-serif;
+    color: $secondary;
+}
+
+.button {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Illustration ancrée dans le coin inférieur droit. */
+.hero-art {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 140%;
+    max-width: 600px;
+    min-width: 0;
+    transform: translate(38%, 36%);
+    pointer-events: none;
+}
+
+.hero-art img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* INTRODUCTION — MOBILE */
+
+.intro {
+    text-align: center;
+    padding: 70px 24px;
+}
+
+.intro h2 {
+    font: 500 34px / 1.18 $font-family-serif;
+    letter-spacing: -0.5px;
+    margin: 18px 0;
+}
+
+.intro h2 em {
+    color: $secondary;
+}
+
+.intro > p {
+    max-width: 565px;
+    margin: 0 auto;
+    color: $stone;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* STATISTIQUES — MOBILE */
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin: 43px auto 0;
+    max-width: 620px;
+}
+
+.stats > div {
+    padding: 0 18px;
+    border-right: 1px solid $marble;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.stats > div:last-child {
+    border-right: 0;
+}
+
+.stats b {
+    font: 500 27px $font-family-serif;
+    color: $secondary;
+}
+
+.stats span {
+    font-size: 10px;
+    color: $stone;
+}
+
+/* CITATION — TOUS LES ÉCRANS */
+
+.quote {
+    background: $primary;
+    color: $marble;
+    text-align: center;
+    padding: 70px 20px;
+}
+
+.quote > span {
+    font: 70px $font-family-serif;
+    color: $chai;
+    line-height: 0.6;
+}
+
+.quote p {
+    font: italic 28px / 1.35 $font-family-serif;
+    margin: 8px;
+}
+
+.quote small {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: $chai;
+}
+
+/* AVIS — MOBILE */
+
+.reviews {
+    text-align: center;
+    padding: 65px 20px;
+}
+
+.reviews h2 {
+    font-size: 42px;
+}
+
+.reviews h2 em {
+    color: $secondary;
+}
+
+.review-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 35px;
+    text-align: left;
+}
+
+.review-row article {
+    padding: 22px;
+    background: $marble;
+}
+
+.stars {
+    color: $secondary;
+    letter-spacing: 2px;
+    font-size: 12px;
+}
+
+.review-row p {
+    font: italic 15px / 1.6 $font-family-serif;
+    min-height: 0;
+}
+
+.review-row b,
+.review-row small {
+    display: block;
+    font-size: 10px;
+}
+
+.review-row small {
+    margin-top: 5px;
+    color: $stone;
+}
+
+/* CONTACT — MOBILE */
+
+.contact {
+    background: $sage;
+    padding: 62px 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+.contact h2 {
+    font-size: 43px;
+    margin: 14px 0;
+}
+
+.contact h2 em {
+    color: $secondary;
+}
+
+.contact p {
+    font-size: 12px;
+    color: $stone;
+    line-height: 1.7;
+    max-width: 390px;
+    margin-bottom: 22px;
+}
+
+/* HORAIRES — MOBILE */
+
+.hours {
+    padding: 10px 0;
+    border: 0;
+}
+
+.hours h3 {
+    font: 500 20px $font-family-serif;
+    margin: 0 0 22px;
+}
+
+.hours p {
+    max-width: none;
+    border-bottom: 1px solid $marble;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.hours b {
+    color: $body-color;
+    font-weight: 600;
+}
+
+.hours small {
+    color: $stone;
+    font-size: 9px;
+}
+
 /* FOOTER — MOBILE */
 
 footer {
@@ -227,6 +510,72 @@ footer a {
 
     .top .navbar-nav .btn {
         width: auto;
+    }
+
+    /* Le hero passe à deux colonnes. */
+
+    .hero {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 40px 50px;
+    }
+    
+    .hero-content {
+        padding: 30px 0 0 50px;
+    }
+
+    /* L'illustration revient dans la deuxième colonne. */
+
+    .hero-art {
+        position: static;
+        right: auto;
+        bottom: auto;
+        width: 100%;
+        max-width: none;
+        transform: none;
+    }
+
+    /* INTRODUCTION — DESK */
+
+    .intro {
+    padding: 93px 20px 80px;
+    }
+
+    .intro h2 {
+    font-size: 43px;
+    }
+
+    /* STATISTIQUES — DESK */
+
+    .stats > div {
+    padding: 0 44px;
+    }
+
+     /* AVIS — DESK */
+
+    .reviews {
+    padding: 82px 10vw;
+    }
+
+    .review-row {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .review-row p {
+        min-height: 70px;
+    }
+
+    /* CONTACT — DESK */
+
+    .contact {
+    padding: 75px 12vw;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 70px;
+    }
+
+    .hours {
+        padding-left: 30px;
+        border-left: 1px solid $marble;
     }
 
     /* FOOTER — DESK */
