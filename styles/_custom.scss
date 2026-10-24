@@ -1,1 +1,29 @@
+$forest: #314c3d;
+$ink: #20332d;
+$marble: #f7f5ef;
+$sage: #e7ece4;
+$chai: #d7b296;
+$clay: #dc744f;
+$stone: #788879;
+
+$font-family-sans-serif: "DM Sans", sans-serif !default;
+$font-family-serif: "Playfair Display", serif !default;
+
+$primary: $forest;
+$secondary: $clay;
+$success: $forest;
+$info: $sage;
+$warning: $chai;
+$danger: $clay;
+$light: $marble;
+$dark: $ink;
+
+$headings-font-family: $font-family-serif;
+$body-color: $ink;
+$link-color: $primary;
+$link-hover-color: $secondary;
+$navbar-light-color: $ink;
+$border-radius: 0.25rem;
+$btn-border-radius: 2rem;
+
 @import "../node_modules/bootstrap/scss/bootstrap";
