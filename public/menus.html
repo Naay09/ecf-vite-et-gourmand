@@ -1,0 +1,365 @@
+<section class="hero text-white">
+
+    <div class="hero-content">
+        <div class="eyebrow">
+            <i class="bi bi-circle-fill"></i>
+            TRAITEUR À BORDEAUX & ALENTOURS
+            </div>
+        <h1>
+            À chaque occasion, sa
+            <br />
+            touche de 
+            <em>gourmandise.</em>
+        </h1>
+        <p> Des menus généreux, imaginés au fil des saisons et préparés avec soin pour 
+            réunir ceux que vous aimez autour d'une belle table. </p>
+
+        <a class="btn btn-light" href="#menu-section">Découvrir nos menus <i class="bi bi-arrow-down"></i> </a>
+      
+    </div>
+    <div class="hero-art">
+        <img src="/images/cuisine-avec-le-coeur.svg" alt="Assiette décorative : cuisiné avec le cœur"/>
+    </div>
+</section>
+
+
+<section class="menu-catalogue" id="menu-section">
+
+    <div class="container-fluid p-0">
+
+        <div class="d-flex flex-wrap justify-content-between
+                    align-items-end gap-3 mb-4">
+            <div>
+                <div class="eyebrow">LA CARTE DU MOMENT</div>
+                <h2 class="mb-0">À votre <em>table.</em></h2>
+            </div>
+            <p class="menu-count mb-0">6 menus à découvrir</p>
+        </div>
+
+        <!-- Filtres : présentation uniquement -->
+<div class="menu-filters mb-4 mb-lg-5">
+    <div class="row g-3">
+        <div class="col-12 col-lg-4">
+            <label for="menu-search" class="form-label">
+                Rechercher
+            </label>
+            <input
+                type="search"
+                class="form-control"
+                id="menu-search"
+                placeholder="Un menu, une envie…"
+            >
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-2">
+            <label for="menu-theme" class="form-label">
+                Thème
+            </label>
+            <select class="form-select" id="menu-theme">
+                <option value="">Tous les thèmes</option>
+                <option value="classique">Classique</option>
+                <option value="noel">Noël</option>
+                <option value="evenement">Événement</option>
+                <option value="paques">Pâques</option>
+            </select>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-2">
+            <label for="menu-diet" class="form-label">
+                Régime
+            </label>
+            <select class="form-select" id="menu-diet">
+                <option value="">Tous les régimes</option>
+                <option value="classique">Classique</option>
+                <option value="vegetarien">Végétarien</option>
+                <option value="vegan">Végan</option>
+            </select>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-2">
+            <label for="menu-guests" class="form-label">
+                Nombre de convives
+            </label>
+
+            <input
+                type="range"
+                class="form-range"
+                id="menu-guests"
+                min="6"
+                max="60"
+                value="20"
+                step="1"
+                aria-describedby="menu-guests-help"
+            >
+
+            <small id="menu-guests-help">
+                De 6 à 60 convives
+            </small>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-2">
+            <label for="menu-price" class="form-label">
+                Prix maximum
+            </label>
+            <input
+                type="range"
+                class="form-range"
+                id="menu-price"
+                min="0"
+                max="120"
+                value="120"
+                step="1"
+                aria-describedby="menu-price-help"
+            >
+            <small id="menu-price-help">
+                De 0 à 120 € / pers.
+            </small>
+        </div>
+    </div>
+</div>    
+            
+    </div>
+
+        <!-- Cartes -->
+        <div class="row g-4">
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <article class="card menu-card h-100">
+                    <div class="position-relative">
+                        <img
+                            src="/images/le-grand-classique.png"
+                            class="card-img-top"
+                            alt="Les plats du menu Le Grand Classique"
+                        >
+                        <span class="menu-tag">Classique</span>
+                    </div>
+
+                    <div class="card-body d-flex flex-column">
+                        <h3 class="card-title">Le Grand Classique</h3>
+                        <p class="menu-description">
+                            L’élégance d’un repas généreux, cuisiné avec
+                            les produits du marché.
+                        </p>
+
+                        <div class="menu-details mt-auto">
+                            <div class="d-flex justify-content-between
+                                        align-items-center gap-2">
+                                <small>Dès 8 personnes</small>
+                                <strong>42 € / pers.</strong>
+                            </div>
+
+                            <div class="d-flex flex-wrap justify-content-between
+                                        align-items-center gap-2 mt-4">
+                                <small>Classique · 20 disponibles</small>
+                                <a href="/detail-menu?menu=grand-classique"
+                                   aria-label="Voir le menu Le Grand Classique">
+                                    Voir le menu
+                                    <i class="bi bi-arrow-up-right"
+                                       aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <article class="card menu-card h-100">
+                    <div class="position-relative">
+                        <img
+                            src="/images/la-table-de-noel.png"
+                            class="card-img-top"
+                            alt="Les plats du menu La Table de Noël"
+                        >
+                        <span class="menu-tag">Noël</span>
+                    </div>
+
+                    <div class="card-body d-flex flex-column">
+                        <h3 class="card-title">La Table de Noël</h3>
+                        <p class="menu-description">
+                            Un menu de fête aux saveurs réconfortantes,
+                            prêt à partager.
+                        </p>
+
+                        <div class="menu-details mt-auto">
+                            <div class="d-flex justify-content-between
+                                        align-items-center gap-2">
+                                <small>Dès 6 personnes</small>
+                                <strong>58 € / pers.</strong>
+                            </div>
+
+                            <div class="d-flex flex-wrap justify-content-between
+                                        align-items-center gap-2 mt-4">
+                                <small>Classique · 12 disponibles</small>
+                                <a href="/detail-menu?menu=table-de-noel"
+                                   aria-label="Voir le menu La Table de Noël">
+                                    Voir le menu
+                                    <i class="bi bi-arrow-up-right"
+                                       aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <article class="card menu-card h-100">
+                    <div class="position-relative">
+                        <img
+                            src="/images/le-jardin-gourmand.png"
+                            class="card-img-top"
+                            alt="Les plats du menu Le Jardin Gourmand"
+                        >
+                        <span class="menu-tag">Événement</span>
+                    </div>
+
+                    <div class="card-body d-flex flex-column">
+                        <h3 class="card-title">Le Jardin Gourmand</h3>
+                        <p class="menu-description">
+                            Une cuisine végétale colorée, de saison
+                            et pleine de caractère.
+                        </p>
+
+                        <div class="menu-details mt-auto">
+                            <div class="d-flex justify-content-between
+                                        align-items-center gap-2">
+                                <small>Dès 10 personnes</small>
+                                <strong>36 € / pers.</strong>
+                            </div>
+
+                            <div class="d-flex flex-wrap justify-content-between
+                                        align-items-center gap-2 mt-4">
+                                <small>Végétarien · 15 disponibles</small>
+                                <a href="/detail-menu?menu=jardin-gourmand"
+                                   aria-label="Voir le menu Le Jardin Gourmand">
+                                    Voir le menu
+                                    <i class="bi bi-arrow-up-right"
+                                       aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+             <div class="col-12 col-md-6 col-lg-4">
+                <article class="card menu-card h-100">
+                    <div class="position-relative">
+                        <img
+                            src="/images/paques-en-famille.png"
+                            class="card-img-top"
+                            alt="Les plats du menu Paques en Famille"
+                        >
+                        <span class="menu-tag">Pâques</span>
+                    </div>
+
+                    <div class="card-body d-flex flex-column">
+                        <h3 class="card-title">Pâques en Famille</h3>
+                        <p class="menu-description">
+                            Le menu printanier qui donne le ton d'un déjeuner en famille.
+                        </p>
+
+                        <div class="menu-details mt-auto">
+                            <div class="d-flex justify-content-between
+                                        align-items-center gap-2">
+                                <small>Dès 8 personnes</small>
+                                <strong>46 € / pers.</strong>
+                            </div>
+
+                            <div class="d-flex flex-wrap justify-content-between
+                                        align-items-center gap-2 mt-4">
+                                <small>Classique · 10 disponibles</small>
+                                <a href="/detail-menu?menu=paques-en-famille"
+                                   aria-label="Voir le menu Paques en Famille">
+                                    Voir le menu
+                                    <i class="bi bi-arrow-up-right"
+                                       aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+             <div class="col-12 col-md-6 col-lg-4">
+                <article class="card menu-card h-100">
+                    <div class="position-relative">
+                        <img
+                            src="/images/la-pause-vegan.png"
+                            class="card-img-top"
+                            alt="Les plats du menu La Pause Végan"
+                        >
+                        <span class="menu-tag">Classique</span>
+                    </div>
+
+                    <div class="card-body d-flex flex-column">
+                        <h3 class="card-title">La Pause Végan</h3>
+                        <p class="menu-description">
+                            Une proposition 100% végétale, fraîche et naturellement gourmande.
+                        </p>
+
+                        <div class="menu-details mt-auto">
+                            <div class="d-flex justify-content-between
+                                        align-items-center gap-2">
+                                <small>Dès 6 personnes</small>
+                                <strong>34 € / pers.</strong>
+                            </div>
+
+                            <div class="d-flex flex-wrap justify-content-between
+                                        align-items-center gap-2 mt-4">
+                                <small>Végan · 18 disponibles</small>
+                                <a href="/detail-menu?menu=la-pause-vegan"
+                                   aria-label="Voir le menu La Pause Végan">
+                                    Voir le menu
+                                    <i class="bi bi-arrow-up-right"
+                                       aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+             <div class="col-12 col-md-6 col-lg-4">
+                <article class="card menu-card h-100">
+                    <div class="position-relative">
+                        <img
+                            src="/images/le-grand-jour.png"
+                            class="card-img-top"
+                            alt="Les plats du menu Le Grand Jour"
+                        >
+                        <span class="menu-tag">ÉVÉNEMENT</span>
+                    </div>
+
+                    <div class="card-body d-flex flex-column">
+                        <h3 class="card-title">Le Grand Jour</h3>
+                        <p class="menu-description">
+                            Une expérience complète pour célébrer les grands moments.
+                        </p>
+
+                        <div class="menu-details mt-auto">
+                            <div class="d-flex justify-content-between
+                                        align-items-center gap-2">
+                                <small>Dès 12 personnes</small>
+                                <strong>72 € / pers.</strong>
+                            </div>
+
+                            <div class="d-flex flex-wrap justify-content-between
+                                        align-items-center gap-2 mt-4">
+                                <small>Classique · 8 disponibles</small>
+                                <a href="/detail-menu?menu=le-grand-jour"
+                                   aria-label="Voir le menu Le Grand Jour">
+                                    Voir le menu
+                                    <i class="bi bi-arrow-up-right"
+                                       aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+        </div>
+    </div>
+</section>

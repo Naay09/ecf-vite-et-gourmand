@@ -12276,6 +12276,33 @@ h2 em,
   color: #d7b296;
 }
 
+/* CITATION LIGHT — TOUS LES ÉCRANS */
+.quote-light {
+  background: #e7ece4;
+  color: #20332d;
+  text-align: center;
+  padding: 70px 20px;
+}
+
+.quote-light > i {
+  font: 30px "Playfair Display", serif;
+  color: #dc744f;
+  line-height: 0.6;
+}
+
+.quote-light p {
+  font: italic 28px/1.35 "Playfair Display", serif;
+  margin: 8px;
+}
+
+.quote-light p em {
+  color: #dc744f;
+}
+
+.quote-light a {
+  font-size: 12px;
+}
+
 /* AVIS — MOBILE */
 .reviews {
   text-align: center;
@@ -12427,6 +12454,184 @@ footer a {
   color: #f7f5ef;
 }
 
+/* FORMULAIRE DE CONTACT — MOBILE */
+.contact-form-section {
+  background: #f7f5ef;
+  padding: 40px 12px;
+}
+
+.contact-form-note {
+  color: #788879;
+  font-size: 14px;
+}
+
+.contact-form-section .form-label {
+  color: #20332d;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.contact-form-section .form-control,
+.contact-form-section .form-select {
+  min-height: 54px;
+  color: #20332d;
+  background-color: #f7f5ef;
+  border: 1px solid #cbd2c7;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.contact-form-section .form-control {
+  padding: 14px 16px;
+}
+
+.contact-form-section .form-control::-moz-placeholder {
+  color: #788879;
+  opacity: 1;
+}
+
+.contact-form-section .form-control::placeholder {
+  color: #788879;
+  opacity: 1;
+}
+
+.contact-form-section .form-control:focus,
+.contact-form-section .form-select:focus {
+  background-color: #fff;
+  border-color: #314c3d;
+  box-shadow: 0 0 0 0.2rem rgba(49, 76, 61, 0.15);
+}
+
+.contact-form-section textarea.form-control {
+  min-height: 180px;
+  resize: vertical;
+}
+
+/* CATALOGUE — MOBILE FIRST */
+.menu-catalogue {
+  padding: 48px 20px 60px;
+}
+
+.menu-catalogue h2, .menu-catalogue .h2 {
+  font: 500 38px/1.15 "Playfair Display", serif;
+  margin: 12px 0 0;
+}
+
+.menu-catalogue h2 em, .menu-catalogue .h2 em {
+  color: #dc744f;
+}
+
+.menu-count {
+  color: #788879;
+  font-size: 12px;
+}
+
+/* FILTRES */
+.menu-filters {
+  padding: 20px;
+  background: #f7f5ef;
+  border: 1px solid #d9ddd5;
+}
+
+.menu-filters .form-label {
+  display: block;
+  color: #657367;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.menu-filters .form-control,
+.menu-filters .form-select {
+  min-height: 44px;
+  border-color: #d9ddd5;
+  border-radius: 0;
+  font-size: 16px;
+}
+
+.menu-filters small, .menu-filters .small {
+  display: block;
+  color: #dc744f;
+  font-size: 11px;
+}
+
+/* CARTES */
+.menu-card {
+  overflow: hidden;
+  background: #f7f5ef;
+  border: 1px solid #d9ddd5;
+  border-radius: 0;
+}
+
+.menu-card .card-img-top {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2.6/1;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 0;
+}
+
+.menu-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 8px 10px;
+  background: #f7f5ef;
+  color: #314c3d;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.menu-card .card-body {
+  padding: 20px;
+}
+
+.menu-card .card-title {
+  font: 500 27px/1.2 "Playfair Display", serif;
+  margin-bottom: 10px;
+}
+
+.menu-description {
+  color: #788879;
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+
+.menu-details {
+  padding-top: 16px;
+  border-top: 1px solid #d9ddd5;
+}
+
+.menu-details small, .menu-details .small {
+  color: #788879;
+  font-size: 11px;
+}
+
+.menu-details strong {
+  color: #314c3d;
+  font-size: 14px;
+}
+
+.menu-details a {
+  color: #314c3d;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.menu-details a:hover {
+  color: #dc744f;
+}
+
+.menu-details a i {
+  margin-left: 8px;
+  color: #dc744f;
+}
+
 /* DESKTOP — À PARTIR DE 992 PX */
 @media (min-width: 992px) {
   /* En-tête */
@@ -12529,5 +12734,22 @@ footer a {
   footer > span {
     order: 0;
     width: auto;
+  }
+  /* FORMULAIRE DE CONTACT — DESK */
+  .contact-form-section {
+    padding-top: 65px;
+  }
+  .heading {
+    padding-left: 50px;
+  }
+  /* CATALOGUE — DESK */
+  .menu-catalogue {
+    padding: 65px 80px 50px;
+  }
+  .menu-catalogue h2, .menu-catalogue .h2 {
+    font-size: 48px;
+  }
+  .menu-card .card-body {
+    padding: 24px;
   }
 }/*# sourceMappingURL=main.css.map */

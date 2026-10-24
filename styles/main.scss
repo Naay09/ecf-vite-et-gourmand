@@ -302,6 +302,34 @@ h2 em {
     color: $chai;
 }
 
+/* CITATION LIGHT — TOUS LES ÉCRANS */
+
+.quote-light {
+    background: $sage;
+    color: $ink;
+    text-align: center;
+    padding: 70px 20px;
+}
+
+.quote-light > i {
+    font: 30px $font-family-serif;
+    color: $clay;
+    line-height: 0.6;
+}
+
+.quote-light p {
+    font: italic 28px / 1.35 $font-family-serif;
+    margin: 8px;
+}
+
+.quote-light p em {
+    color: $secondary;
+}
+
+.quote-light a {
+    font-size: 12px;
+}
+
 /* AVIS — MOBILE */
 
 .reviews {
@@ -456,6 +484,183 @@ footer a {
     color: $marble;
 }
 
+/* FORMULAIRE DE CONTACT — MOBILE */
+
+.contact-form-section {
+    background: $marble;
+    padding: 40px 12px;
+}
+
+.contact-form-note {
+    color: $stone;
+    font-size: 14px;
+}
+
+.contact-form-section .form-label {
+    color: $body-color;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.contact-form-section .form-control,
+.contact-form-section .form-select {
+    min-height: 54px;
+    color: $body-color;
+    background-color: $marble;
+    border: 1px solid #cbd2c7;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.contact-form-section .form-control {
+    padding: 14px 16px;
+}
+
+.contact-form-section .form-control::placeholder {
+    color: $stone;
+    opacity: 1;
+}
+
+.contact-form-section .form-control:focus,
+.contact-form-section .form-select:focus {
+    background-color: #fff;
+    border-color: $primary;
+    box-shadow: 0 0 0 0.2rem rgba($primary, 0.15);
+}
+
+.contact-form-section textarea.form-control {
+    min-height: 180px;
+    resize: vertical;
+}
+
+/* CATALOGUE — MOBILE FIRST */
+
+.menu-catalogue {
+    padding: 48px 20px 60px;
+}
+
+.menu-catalogue h2 {
+    font: 500 38px / 1.15 $font-family-serif;
+    margin: 12px 0 0;
+}
+
+.menu-catalogue h2 em {
+    color: $secondary;
+}
+
+.menu-count {
+    color: $stone;
+    font-size: 12px;
+}
+
+/* FILTRES */
+
+.menu-filters {
+    padding: 20px;
+    background: $marble;
+    border: 1px solid #d9ddd5;
+}
+
+.menu-filters .form-label {
+    display: block;
+    color: #657367;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.menu-filters .form-control,
+.menu-filters .form-select {
+    min-height: 44px;
+    border-color: #d9ddd5;
+    border-radius: 0;
+    font-size: 16px;
+}
+
+.menu-filters small {
+    display: block;
+    color: $secondary;
+    font-size: 11px;
+}
+
+/* CARTES */
+
+.menu-card {
+    overflow: hidden;
+    background: $marble;
+    border: 1px solid #d9ddd5;
+    border-radius: 0;
+}
+
+.menu-card .card-img-top {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2.6 / 1;
+    object-fit: cover;
+    border-radius: 0;
+}
+
+.menu-tag {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    padding: 8px 10px;
+    background: $marble;
+    color: $primary;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.menu-card .card-body {
+    padding: 20px;
+}
+
+.menu-card .card-title {
+    font: 500 27px / 1.2 $font-family-serif;
+    margin-bottom: 10px;
+}
+
+.menu-description {
+    color: $stone;
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 28px;
+}
+
+.menu-details {
+    padding-top: 16px;
+    border-top: 1px solid #d9ddd5;
+}
+
+.menu-details small {
+    color: $stone;
+    font-size: 11px;
+}
+
+.menu-details strong {
+    color: $primary;
+    font-size: 14px;
+}
+
+.menu-details a {
+    color: $primary;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.menu-details a:hover {
+    color: $secondary;
+}
+
+.menu-details a i {
+    margin-left: 8px;
+    color: $secondary;
+}
+
+
 /* DESKTOP — À PARTIR DE 992 PX */
 
 @media (min-width: 992px) {
@@ -589,5 +794,29 @@ footer a {
     footer > span {
         order: 0;
         width: auto;
+    }
+
+    /* FORMULAIRE DE CONTACT — DESK */
+
+    .contact-form-section {
+    padding-top: 65px;
+    }
+
+    .heading {
+    padding-left: 50px;
+    }
+
+    /* CATALOGUE — DESK */
+    
+    .menu-catalogue {
+    padding: 65px 80px 50px;
+    }
+
+    .menu-catalogue h2 {
+        font-size: 48px;
+    }
+
+    .menu-card .card-body {
+        padding: 24px;
     }
 }
