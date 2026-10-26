@@ -12632,6 +12632,121 @@ footer a {
   color: #dc744f;
 }
 
+/* MODALE MENU — MOBILE */
+#modal-menu .modal-content {
+  background: #f7f5ef;
+  color: #20332d;
+  border: 0;
+  border-radius: 0;
+}
+
+#modal-menu .modal-header {
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px;
+  border-bottom: 0;
+}
+
+#modal-menu .modal-title {
+  font: 500 32px/1.15 "Playfair Display", serif;
+  margin: 0;
+}
+
+#modal-menu .eyebrow {
+  color: #788879;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+#modal-menu .btn-close {
+  flex-shrink: 0;
+}
+
+#modal-menu .modal-body {
+  padding: 0 24px 24px;
+}
+
+#modal-menu h3, #modal-menu .h3 {
+  font: 500 28px/1.2 "Playfair Display", serif;
+  margin: 24px 0 16px;
+}
+
+#modal-menu p,
+#modal-menu li {
+  color: #314c3d;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+#modal-menu .menu-modal-description {
+  margin-bottom: 24px;
+}
+
+#modal-menu .menu-modal-dishes {
+  padding-left: 24px;
+  margin-bottom: 24px;
+}
+
+#modal-menu .menu-modal-dishes li + li {
+  margin-top: 8px;
+}
+
+#modal-menu .modal-footer {
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 24px;
+  border-top: 1px solid #d9ddd5;
+}
+
+#modal-menu .modal-footer .btn {
+  width: 100%;
+}
+
+/* GALERIE */
+#menu-modal-gallery {
+  background: #e7ece4;
+  padding-bottom: 36px;
+}
+
+/* Toutes les vues ont la même hauteur. */
+#menu-modal-gallery .carousel-item img {
+  display: block;
+  width: 100%;
+  height: 280px;
+}
+
+/* Le montage entier reste visible. */
+#menu-modal-gallery .menu-gallery-overview {
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+/* Flèches */
+#menu-modal-gallery .carousel-control-prev,
+#menu-modal-gallery .carousel-control-next {
+  bottom: 36px;
+  width: 48px;
+  opacity: 1;
+}
+
+#menu-modal-gallery .carousel-control-prev-icon,
+#menu-modal-gallery .carousel-control-next-icon {
+  width: 36px;
+  height: 36px;
+  background-color: #314c3d;
+  background-size: 60%;
+  border-radius: 50%;
+}
+
+/* Indicateurs sous les images */
+#menu-modal-gallery .carousel-indicators {
+  margin-bottom: 10px;
+}
+
+#menu-modal-gallery .carousel-indicators button {
+  background-color: #314c3d;
+}
+
 /* DESKTOP — À PARTIR DE 992 PX */
 @media (min-width: 992px) {
   /* En-tête */
@@ -12751,5 +12866,24 @@ footer a {
   }
   .menu-card .card-body {
     padding: 24px;
+  }
+  /* MODALE - DESK */
+  #modal-menu .modal-header {
+    padding: 32px 40px;
+  }
+  #modal-menu .modal-title {
+    font-size: 48px;
+  }
+  #modal-menu .modal-body {
+    padding: 0 40px 32px;
+  }
+  #modal-menu h3, #modal-menu .h3 {
+    font-size: 36px;
+  }
+  #modal-menu .modal-footer {
+    padding: 24px 40px;
+  }
+  #modal-menu .modal-footer .btn {
+    width: auto;
   }
 }/*# sourceMappingURL=main.css.map */

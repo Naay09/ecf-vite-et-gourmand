@@ -151,11 +151,14 @@
                             <div class="d-flex flex-wrap justify-content-between
                                         align-items-center gap-2 mt-4">
                                 <small>Classique · 20 disponibles</small>
-                                <a href="/detail-menu?menu=grand-classique"
-                                   aria-label="Voir le menu Le Grand Classique">
+                                   <a
+                                    href="#modal-menu"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modal-menu"
+                                    aria-haspopup="dialog"
+                                >
                                     Voir le menu
-                                    <i class="bi bi-arrow-up-right"
-                                       aria-hidden="true"></i>
+                                    <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
                                 </a>
                             </div>
                         </div>
@@ -363,3 +366,238 @@
         </div>
     </div>
 </section>
+
+<!-- Le Grand Classique : modale -->
+
+<div
+    class="modal fade menu-modal"
+    id="modal-menu"
+    tabindex="-1"
+    aria-labelledby="menu-modal-title"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-lg modal-dialog-centered
+                modal-dialog-scrollable modal-fullscreen-sm-down">
+
+        <div class="modal-content">
+
+            <!-- En-tête -->
+            <div class="modal-header align-items-start">
+                <div>
+                    <p class="eyebrow mb-2" id="menu-modal-category">
+                        Classique · Classique
+                    </p>
+
+                    <h2 class="modal-title" id="menu-modal-title">
+                        Le Grand Classique
+                    </h2>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-close flex-shrink-0"
+                    data-bs-dismiss="modal"
+                    aria-label="Fermer les détails du menu"
+                ></button>
+            </div>
+
+            <!-- Contenu défilant -->
+            <div class="modal-body">
+                <p class="menu-modal-description" id="menu-modal-description">
+                    L’élégance d’un repas généreux, cuisiné avec les produits du marché.
+                </p>
+
+                <!-- Galerie sans défilement automatique -->
+                <div
+                    id="menu-modal-gallery"
+                    class="carousel slide menu-gallery mb-4"
+                    role="region"
+                    aria-roledescription="carrousel"
+                    aria-label="Photos du menu"
+                    data-bs-interval="false"
+                >
+                    <div
+                        class="carousel-inner"
+                        id="menu-modal-images"
+                    >
+                        <div class="carousel-item active">
+                            <img
+                                src="/images/le-grand-classique.png"
+                                class="menu-gallery-overview"
+                                alt="Vue d’ensemble du menu Le Grand Classique"
+                            >
+                        </div>
+
+                        <div class="carousel-item">
+                            <img
+                                src="/images/le-grand-classique.png"
+                                class="menu-gallery-overview"
+                                alt="Détail de l’entrée du Grand Classique"
+                            >
+                        </div>
+
+                        <div class="carousel-item">
+                            <img
+                                src="/images/le-grand-classique.png"
+                                class="menu-gallery-overview"
+                                alt="Détail du plat du Grand Classique"
+                            >
+                        </div>
+
+                        <div class="carousel-item">
+                            <img
+                                src="/images/le-grand-classique.png"
+                                class="menu-gallery-overview"
+                                alt="Détail du dessert du Grand Classique"
+                            >
+                        </div>
+                    </div>
+
+                    <button
+                        class="carousel-control-prev"
+                        type="button"
+                        data-bs-target="#menu-modal-gallery"
+                        data-bs-slide="prev"
+                    >
+                        <span
+                            class="carousel-control-prev-icon"
+                            aria-hidden="true"
+                        ></span>
+                        <span class="visually-hidden">
+                            Image précédente
+                        </span>
+                    </button>
+
+                    <button
+                        class="carousel-control-next"
+                        type="button"
+                        data-bs-target="#menu-modal-gallery"
+                        data-bs-slide="next"
+                    >
+                        <span
+                            class="carousel-control-next-icon"
+                            aria-hidden="true"
+                        ></span>
+                        <span class="visually-hidden">
+                            Image suivante
+                        </span>
+                    </button>
+
+                    <div
+                        class="carousel-indicators"
+                        id="menu-modal-indicators"
+                    >
+                        <button
+                            type="button"
+                            data-bs-target="#menu-modal-gallery"
+                            data-bs-slide-to="0"
+                            class="active"
+                            aria-current="true"
+                            aria-label="Vue d’ensemble"
+                        ></button>
+
+                        <button
+                            type="button"
+                            data-bs-target="#menu-modal-gallery"
+                            data-bs-slide-to="1"
+                            aria-label="Entrée"
+                        ></button>
+
+                        <button
+                            type="button"
+                            data-bs-target="#menu-modal-gallery"
+                            data-bs-slide-to="2"
+                            aria-label="Plat"
+                        ></button>
+
+                        <button
+                            type="button"
+                            data-bs-target="#menu-modal-gallery"
+                            data-bs-slide-to="3"
+                            aria-label="Dessert"
+                        ></button>
+                    </div>
+                </div>
+
+                <!-- Composition du menu -->
+                <h3>Au menu</h3>
+
+                <ul class="menu-modal-dishes">
+                    <li>
+                        <strong>Entrée :</strong>
+                        <span id="menu-modal-starter">
+                            Velouté de saison, éclats de noisette
+                        </span>
+                    </li>
+
+                    <li>
+                        <strong>Plat :</strong>
+                        <span id="menu-modal-main">
+                            Suprême de volaille, jus aux herbes
+                        </span>
+                    </li>
+
+                    <li>
+                        <strong>Dessert :</strong>
+                        <span id="menu-modal-dessert">
+                            Tarte fine aux pommes
+                        </span>
+                    </li>
+                </ul>
+
+                <p>
+                    <strong>Allergènes :</strong>
+                    <span id="menu-modal-allergens">
+                        Gluten, fruits à coque, lait
+                    </span>
+                </p>
+
+                <p>
+                    <strong>Conditions du menu :</strong>
+                    <span id="menu-modal-conditions">
+                        Commande 3 jours à l’avance.
+                        À conserver au frais et à consommer sous 24 h.
+                    </span>
+                </p>
+
+                <!-- Informations commerciales -->
+                <div class="d-flex flex-wrap gap-3">
+                    <p class="mb-0">
+                        <strong>Minimum :</strong>
+                        <span id="menu-modal-minimum">8</span>
+                        personnes
+                    </p>
+
+                    <p class="mb-0">
+                        <strong>Prix :</strong>
+                        <span id="menu-modal-price">42</span>
+                        € / personne
+                    </p>
+
+                    <p class="mb-0">
+                        <strong>Disponibilité :</strong>
+                        <span id="menu-modal-stock">20</span>
+                        commandes
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action -->
+            <div class="modal-footer justify-content-start">
+                <button
+                    type="button"
+                    class="btn btn-primary px-4 py-3"
+                    id="menu-modal-order"
+                >
+                    Commander ce menu
+                    <i
+                        class="bi bi-arrow-right ms-3"
+                        aria-hidden="true"
+                    ></i>
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
