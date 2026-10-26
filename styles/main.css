@@ -12747,6 +12747,47 @@ footer a {
   background-color: #314c3d;
 }
 
+/* PAGES LEGALES - MOBILE */
+.legal-page {
+  background: #f7f5ef;
+  padding: 40px 20px 60px;
+}
+
+.legal-page h1, .legal-page .h1 {
+  margin: 16px 0;
+}
+
+.legal-page h2, .legal-page .h2 {
+  margin-bottom: 16px;
+}
+
+.legal-page p, .legal-page li {
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.legal-page .legal-date {
+  color: #788879;
+  font-size: 13px;
+}
+
+.legal-summary {
+  background: #e7ece4;
+  padding: 24px;
+  margin-block: 32px;
+}
+
+.legal-summary ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.legal-block {
+  padding-block: 24px;
+  border-bottom: 1px solid #d9ddd5;
+  scroll-margin-top: 24px;
+}
+
 /* DESKTOP — À PARTIR DE 992 PX */
 @media (min-width: 992px) {
   /* En-tête */
@@ -12885,5 +12926,12 @@ footer a {
   }
   #modal-menu .modal-footer .btn {
     width: auto;
+  }
+  /* PAGES LEGALES - DESK */
+  .legal-page {
+    padding: 65px 50px 80px;
+  }
+  .legal-page h2, .legal-page .h2 {
+    font-size: 30px;
   }
 }/*# sourceMappingURL=main.css.map */
