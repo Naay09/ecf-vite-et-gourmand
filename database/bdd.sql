@@ -1,9 +1,9 @@
-CREATE DATABASE IF NOT EXISTS vite_et_gourmand
+CREATE DATABASE IF NOT EXISTS ecf_vite_et_gourmand
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
 -- Sélection de la base de données
-USE vite_et_gourmand;
+USE ecf_vite_et_gourmand;
 
 -- ==========================================
 -- TABLE : COMPTE

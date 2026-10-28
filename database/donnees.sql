@@ -2,7 +2,7 @@
 -- DONNÉES INITIALES : VITE & GOURMAND
 -- ==========================================
 
-USE vite_et_gourmand;
+USE ecf_vite_et_gourmand;
 
 -- ==========================================
 -- TABLE : THEME
