@@ -12465,15 +12465,15 @@ footer a {
   font-size: 14px;
 }
 
-.contact-form-section .form-label {
+.form-label {
   color: #20332d;
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 10px;
 }
 
-.contact-form-section .form-control,
-.contact-form-section .form-select {
+.form-control,
+.form-select {
   min-height: 54px;
   color: #20332d;
   background-color: #f7f5ef;
@@ -12482,22 +12482,22 @@ footer a {
   font-size: 16px;
 }
 
-.contact-form-section .form-control {
+.form-control {
   padding: 14px 16px;
 }
 
-.contact-form-section .form-control::-moz-placeholder {
+.form-control::-moz-placeholder {
   color: #788879;
   opacity: 1;
 }
 
-.contact-form-section .form-control::placeholder {
+.form-control::placeholder {
   color: #788879;
   opacity: 1;
 }
 
-.contact-form-section .form-control:focus,
-.contact-form-section .form-select:focus {
+.form-control:focus,
+.form-select:focus {
   background-color: #fff;
   border-color: #314c3d;
   box-shadow: 0 0 0 0.2rem rgba(49, 76, 61, 0.15);
@@ -12788,6 +12788,45 @@ footer a {
   scroll-margin-top: 24px;
 }
 
+/* MODALE CONNEXION — MOBILE */
+#modal-connexion .modal-content {
+  position: relative;
+  padding: 32px 20px;
+  background: #f7f5ef;
+  color: #20332d;
+  border: 0;
+  border-radius: 0;
+}
+
+#modal-connexion .btn-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+#modal-connexion .modal-title {
+  font: 500 36px/1.1 "Playfair Display", serif;
+  margin: 0;
+  padding-right: 20px;
+}
+
+#modal-connexion .auth-description {
+  color: #788879;
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 24px 0;
+}
+
+#modal-connexion a {
+  color: #314c3d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+#modal-connexion a:hover {
+  color: #dc744f;
+}
+
 /* DESKTOP — À PARTIR DE 992 PX */
 @media (min-width: 992px) {
   /* En-tête */
@@ -12933,5 +12972,13 @@ footer a {
   }
   .legal-page h2, .legal-page .h2 {
     font-size: 30px;
+  }
+  /* MODALE CONNEXION — DESK */
+  #modal-connexion .modal-content {
+    padding: 54px 60px;
+  }
+  #modal-connexion .btn-close {
+    top: 32px;
+    right: 32px;
   }
 }/*# sourceMappingURL=main.css.map */

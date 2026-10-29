@@ -100,8 +100,94 @@
         </div>
     </footer>
 
+    <!-- Modale de connexion -->
+    <div
+        class="modal fade modal-auth"
+        id="modal-connexion"
+        tabindex="-1"
+        aria-labelledby="connexion-title"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <!-- Fermer la modale -->
+                <button
+                    type="button"
+                    class="btn-close ms-auto"
+                    data-bs-dismiss="modal"
+                    aria-label="Fermer"
+                ></button>
+
+                <!-- En-tête -->
+                <p class="eyebrow">VOTRE ESPACE</p>
+
+                <h2 class="modal-title" id="connexion-title">
+                    Ravi de vous revoir.
+                </h2>
+
+                <p class="auth-description">
+                    Connectez-vous à votre espace client ou
+                    inscrivez-vous.
+                </p>
+
+                <!-- Formulaire -->
+                <form id="form-connexion">
+
+                    <div class="mb-3">
+                        <label for="connexion-email" class="form-label">
+                            Adresse e-mail
+                        </label>
+
+                        <input
+                            type="email"
+                            class="form-control"
+                            id="connexion-email"
+                            name="email"
+                            placeholder="vous@exemple.fr"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="connexion-password" class="form-label">
+                            Mot de passe
+                        </label>
+
+                        <input
+                            type="password"
+                            class="form-control"
+                            id="connexion-password"
+                            name="password"
+                            placeholder="Votre mot de passe"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-primary button px-4 py-3">
+                        Se connecter
+                        <i class="bi bi-arrow-right ms-3"></i>
+                    </button>
+
+                </form>
+
+                <!-- Liens -->
+                <div class="d-flex flex-wrap gap-3 mt-3">
+                    <a href="#">Créer un compte</a>
+                    <span>·</span>
+                    <a href="#">Mot de passe oublié ?</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="./Router/router.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/menu-modal.js" defer></script>
     
 </body>
 </html>
