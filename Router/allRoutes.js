@@ -4,7 +4,7 @@ import Route from "./route.js";
 export const allRoutes = [
     new Route("/", "Accueil", "/public/home.html"),
     new Route("/menus", "Menus", "/public/menus.php"),
-    new Route("/contact", "Contact", "/public/contact.html"),
+    new Route("/contact", "Contact", "/public/contact.php"),
     new Route("/mentions-legales", "Mentions légales", "/public/mentions-legales.html"),
     new Route("/politique-de-confidentialite", "Politique de confidentialité", "/public/politique-confidentialite.html"),
     new Route("/cgv", "Conditions générales de vente", "/public/cgv.html"),

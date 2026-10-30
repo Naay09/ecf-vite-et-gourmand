@@ -27,7 +27,7 @@
         <div class="eyebrow">VOTRE PROJET COMMENCE ICI</div>
         <h2>Racontez-nous <em>votre envie.</em></h2>
         <div class="col-12 col-md-5">
-            <form id="contact-form">
+            <form id="contact-form" method="post">
                 <p class="contact-form-note mb-4">Les champs marqués d’un * sont obligatoires.</p>
                 <div class="row g-4">
                     <div class="col-12 col-md-6">
@@ -90,21 +90,19 @@
                     </div>
 
                     <div class="col-12">
-                        <label for="occasion" class="form-label">
-                            Vous avez en tête…
+                        <label for="titre" class="form-label">
+                            Objet de votre demande *
                         </label>
-                        <select
-                            class="form-select"
-                            id="occasion"
-                            name="occasion"
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="titre"
+                            name="titre"
+                            maxlength="150"
+                            placeholder="Ex. : Demande de devis pour un mariage"
+                            required
                         >
-                            <option value="">Choisissez une occasion</option>
-                            <option value="mariage">Un mariage</option>
-                            <option value="anniversaire">Un anniversaire</option>
-                            <option value="entreprise">Un événement d’entreprise</option>
-                            <option value="famille">Un repas de famille</option>
-                            <option value="autre">Une autre occasion</option>
-                        </select>
                     </div>
 
                     <div class="col-12 col-md-6">
@@ -147,10 +145,33 @@
                             required
                         ></textarea>
                     </div>
+                    
+                      <!-- Champ anti-spam -->
+                    <div class="visually-hidden" aria-hidden="true">
+                        <label for="site-web">Ne pas remplir ce champ</label>
+                        <input
+                            type="text"
+                            id="site-web"
+                            name="site_web"
+                            tabindex="-1"
+                            autocomplete="off"
+                        >
+                    </div>
+                    
                 </div>
+
                 <div class="col-12 mt-4">
                 <button class="btn btn-primary button" type="submit">Envoyer mon message</button>
                 </div>
+
+                <!-- Message de confirmation ou d'erreur -->
+                <div
+                    id="contact-feedback"
+                    class="mt-3"
+                    role="status"
+                    aria-live="polite"
+                ></div>
+
             </form>
 
     </div>
