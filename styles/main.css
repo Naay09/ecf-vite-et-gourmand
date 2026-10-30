@@ -12482,7 +12482,7 @@ footer a {
   font-size: 16px;
 }
 
-.form-control {
+.contact-form-section .form-control {
   padding: 14px 16px;
 }
 
@@ -12536,7 +12536,7 @@ footer a {
 
 .menu-filters .form-label {
   display: block;
-  color: #657367;
+  color: #788879;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -12554,6 +12554,25 @@ footer a {
   display: block;
   color: #dc744f;
   font-size: 11px;
+}
+
+.menu-filters .form-check-label {
+  color: #20332d;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.menu-filters .form-check-input {
+  border-color: #788879;
+}
+
+.menu-filters .form-check-input:checked {
+  background-color: #314c3d;
+  border-color: #314c3d;
+}
+
+.menu-price-controls {
+  max-width: 700px;
 }
 
 /* CARTES */
@@ -12825,6 +12844,10 @@ footer a {
 
 #modal-connexion a:hover {
   color: #dc744f;
+}
+
+#modal-connexion .form-control {
+  padding: 14px 16px;
 }
 
 /* DESKTOP — À PARTIR DE 992 PX */

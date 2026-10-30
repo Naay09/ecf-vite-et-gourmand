@@ -36,90 +36,173 @@
             <p class="menu-count mb-0">6 menus à découvrir</p>
         </div>
 
-        <!-- Filtres : présentation uniquement -->
-<div class="menu-filters mb-4 mb-lg-5">
-    <div class="row g-3">
-        <div class="col-12 col-lg-4">
-            <label for="menu-search" class="form-label">
-                Rechercher
-            </label>
-            <input
-                type="search"
-                class="form-control"
-                id="menu-search"
-                placeholder="Un menu, une envie…"
-            >
-        </div>
+        <!-- Filtres -->
+    <div class="menu-filters mb-4 mb-lg-5" id="menu-filters">
+        <div class="row g-3">
 
-        <div class="col-12 col-md-6 col-lg-2">
-            <label for="menu-theme" class="form-label">
-                Thème
-            </label>
-            <select class="form-select" id="menu-theme">
-                <option value="">Tous les thèmes</option>
-                <option value="classique">Classique</option>
-                <option value="noel">Noël</option>
-                <option value="evenement">Événement</option>
-                <option value="paques">Pâques</option>
-            </select>
-        </div>
+            <!-- Recherche -->
+            <div class="col-12 col-lg-4">
+                <label for="menu-search" class="form-label">Rechercher</label>
+                <input
+                    type="search"
+                    class="form-control"
+                    id="menu-search"
+                    placeholder="Un menu, une envie…"
+                >
+            </div>
 
-        <div class="col-12 col-md-6 col-lg-2">
-            <label for="menu-diet" class="form-label">
-                Régime
-            </label>
-            <select class="form-select" id="menu-diet">
-                <option value="">Tous les régimes</option>
-                <option value="classique">Classique</option>
-                <option value="vegetarien">Végétarien</option>
-                <option value="vegan">Végan</option>
-            </select>
-        </div>
+            <!-- Thème -->
+            <div class="col-12 col-md-6 col-lg-2">
+                <label for="menu-theme" class="form-label">Thème</label>
+                <select class="form-select" id="menu-theme">
+                    <option value="">Tous les thèmes</option>
+                    <option value="Classique">Classique</option>
+                    <option value="Noël">Noël</option>
+                    <option value="Événement">Événement</option>
+                    <option value="Pâques">Pâques</option>
+                </select>
+            </div>
 
-        <div class="col-12 col-md-6 col-lg-2">
-            <label for="menu-guests" class="form-label">
-                Nombre de convives
-            </label>
+            <!-- Régime -->
+            <div class="col-12 col-md-6 col-lg-2">
+                <label for="menu-diet" class="form-label">Régime</label>
+                <select class="form-select" id="menu-diet">
+                    <option value="">Tous les régimes</option>
+                    <option value="Classique">Classique</option>
+                    <option value="Végétarien">Végétarien</option>
+                    <option value="Vegan">Végan</option>
+                </select>
+            </div>
 
-            <input
-                type="range"
-                class="form-range"
-                id="menu-guests"
-                min="6"
-                max="60"
-                value="20"
-                step="1"
-                aria-describedby="menu-guests-help"
-            >
+            <!-- Nombre de convives -->
+            <div class="col-12 col-md-6 col-lg-2">
+                <label for="menu-guests" class="form-label">Nombre de convives</label>
 
-            <small id="menu-guests-help">
-                De 6 à 60 convives
-            </small>
-        </div>
+                <input
+                    type="range"
+                    class="form-range"
+                    id="menu-guests"
+                    min="6"
+                    max="60"
+                    value="60"
+                    step="1"
+                    aria-describedby="menu-guests-help"
+                >
 
-        <div class="col-12 col-md-6 col-lg-2">
-            <label for="menu-price" class="form-label">
-                Prix maximum
-            </label>
-            <input
-                type="range"
-                class="form-range"
-                id="menu-price"
-                min="0"
-                max="120"
-                value="120"
-                step="1"
-                aria-describedby="menu-price-help"
-            >
-            <small id="menu-price-help">
-                De 0 à 120 € / pers.
-            </small>
-        </div>
-    </div>
-</div>    
+                <small id="menu-guests-help">
+                    Jusque 60 convives
+                </small>
+            </div>
             
-    </div>
+            <!-- Prix -->
+            <div class="col-12">
 
+                    <!-- Choix du mode de filtrage -->
+                    <fieldset class="mb-3">
+
+                        <legend class="form-label">
+                            Filtrer par prix
+                        </legend>
+
+                        <div class="d-flex flex-wrap gap-3">
+
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="menu-price-mode"
+                                    id="price-mode-max"
+                                    value="max"
+                                    checked
+                                >
+                                <label class="form-check-label" for="price-mode-max">
+                                    Prix maximum
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="menu-price-mode"
+                                    id="price-mode-range"
+                                    value="range"
+                                >
+                                <label class="form-check-label" for="price-mode-range">
+                                    Fourchette de prix
+                                </label>
+                            </div>
+
+                        </div>
+                    </fieldset>
+
+                    <!-- Curseurs -->
+                    <div class="row g-3 menu-price-controls">
+
+                        <!-- Prix minimum : masqué par défaut -->
+                        <div class="col-12 col-md-6 d-none" id="menu-price-min-block">
+
+                            <label for="menu-price-min" class="form-label">
+                                Prix minimum
+                            </label>
+
+                            <input
+                                type="range"
+                                class="form-range"
+                                id="menu-price-min"
+                                min="0"
+                                max="120"
+                                value="0"
+                                step="1"
+                                aria-describedby="menu-price-min-help"
+                            >
+
+                            <small id="menu-price-min-help">
+                                À partir de 0 € / pers.
+                            </small>
+                        </div>
+
+                        <!-- Prix maximum -->
+                        <div class="col-12 col-md-6">
+
+                            <label for="menu-price" class="form-label">
+                                Prix maximum
+                            </label>
+
+                            <input
+                                type="range"
+                                class="form-range"
+                                id="menu-price"
+                                min="0"
+                                max="120"
+                                value="120"
+                                step="1"
+                                aria-describedby="menu-price-help"
+                            >
+
+                            <small id="menu-price-help">
+                                Jusqu'à 120 € / pers.
+                            </small>
+                        </div>
+
+                    </div>
+                </div>
+        </div>
+            <!-- Réinitialisation des filtres -->
+            <div class="d-flex mt-3">
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    id="menu-reset"
+                >
+                    <i class="bi bi-arrow-counterclockwise me-2"
+                    aria-hidden="true"></i>
+                    Réinitialiser les filtres
+                </button>
+            </div>
+
+    </div>    
+                
         <!-- Cartes -->
          <?php
         $menus = [];
@@ -178,99 +261,8 @@
 
         <?php else: ?>
 
-        <div class="row g-4">
-
-            <?php foreach ($menus as $menu): ?>
-
-                <?php
-                    // Préparation des données
-                    $titre = htmlspecialchars($menu['titre'], ENT_QUOTES, 'UTF-8');
-
-                    $description = htmlspecialchars($menu['description'], ENT_QUOTES, 'UTF-8');
-
-                    $theme = htmlspecialchars($menu['theme'], ENT_QUOTES, 'UTF-8');
-
-                    $regime = htmlspecialchars($menu['regime'], ENT_QUOTES, 'UTF-8');
-
-                    $imageUrl = '/' . $menu['image_url'];
-
-                    $imageAlt = htmlspecialchars($menu['texte_alternatif'],ENT_QUOTES,'UTF-8');
-
-                    $prix = number_format($menu['prix_personne'], 0, ',', ' ');
-
-                ?>
-
-                <div class="col-12 col-md-6 col-lg-4">
-                    <article class="card menu-card h-100">
-
-                        <div class="position-relative">
-
-                                <img
-                                    src="<?= htmlspecialchars($imageUrl, ENT_QUOTES, 'UTF-8') ?>"
-                                    class="card-img-top"
-                                    alt="<?= $imageAlt ?>"
-                                >
-
-                            <span class="menu-tag">
-                                <?= $theme ?>
-                            </span>
-
-                        </div>
-
-                        <div class="card-body d-flex flex-column">
-
-                            <h3 class="card-title">
-                                <?= $titre ?>
-                            </h3>
-
-                            <p class="menu-description">
-                                <?= $description ?>
-                            </p>
-
-                            <div class="menu-details mt-auto">
-
-                                <div class="d-flex justify-content-between
-                                            align-items-center gap-2">
-
-                                    <small>
-                                        Dès <?= (int) $menu['nb_personnes_min'] ?> personnes
-                                    </small>
-
-                                    <strong>
-                                        <?= $prix ?> € / pers.
-                                    </strong>
-
-                                </div>
-
-                                <div class="d-flex flex-wrap justify-content-between
-                                            align-items-center gap-2 mt-4">
-
-                                    <small>
-                                        <?= $regime ?> ·
-                                        <?= (int) $menu['stock_disponible'] ?> disponibles
-                                    </small>
-
-                                    <a
-                                        href="#modal-menu"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal-menu"
-                                        data-menu-id="<?= (int) $menu['id'] ?>"
-                                        aria-haspopup="dialog"
-                                        aria-label="Voir le menu <?= $titre ?>"
-                                    >
-                                        Voir le menu
-                                        <i
-                                            class="bi bi-arrow-up-right"
-                                            aria-hidden="true"
-                                        ></i>
-                                    </a>
-
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-            <?php endforeach; ?>
+        <div class="row g-4" id="menu-results">
+            <?php require __DIR__ . '/../includes/cartes-menu.php'; ?>
         </div>
     <?php endif; ?>
 
