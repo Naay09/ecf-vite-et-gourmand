@@ -210,7 +210,7 @@
 
         try {
             // Connexion à la base de données
-            require_once __DIR__ . '/../config/db-connection.php';
+            require_once __DIR__ . '/../../config/db-connection.php';
 
             // Récupération des menus
             $sql = " SELECT
@@ -262,7 +262,7 @@
         <?php else: ?>
 
         <div class="row g-4" id="menu-results">
-            <?php require __DIR__ . '/../includes/cartes-menu.php'; ?>
+            <?php require __DIR__ . '/../../includes/cartes-menu.php'; ?>
         </div>
     <?php endif; ?>
 

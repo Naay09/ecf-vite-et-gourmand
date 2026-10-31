@@ -12129,7 +12129,7 @@ footer a:not(.btn):hover {
 }
 
 .hero .eyebrow {
-  color: #dc744f;
+  color: #d7b296;
 }
 
 .eyebrow i {
@@ -12153,7 +12153,7 @@ h2 em,
   font-size: 14px;
   line-height: 1.8;
   color: #f7f5ef;
-  max-width: 405px;
+  max-width: 450px;
   margin: 0 0 25px;
 }
 
@@ -12191,7 +12191,7 @@ h2 em,
 
 .hero-art img {
   display: block;
-  width: 100%;
+  width: 80%;
   height: auto;
 }
 

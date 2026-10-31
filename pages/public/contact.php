@@ -3,7 +3,7 @@
     <div class="hero-content">
         <div class="eyebrow">
             <i class="bi bi-circle-fill"></i>
-            UNE QUESTION, UNE ENVIE, UN BEAU MOMENT    PRÉPARER ?
+            UNE QUESTION, UNE ENVIE, UN BEAU MOMENT A PRÉPARER ?
             </div>
         <h1>
             Et si on préparait ça
@@ -21,7 +21,7 @@
 
 </section>
 
-<section class="contact-form-section">
+<section class="contact-form-section" id="contact-form">
 
     <div class=" heading">
         <div class="eyebrow">VOTRE PROJET COMMENCE ICI</div>
