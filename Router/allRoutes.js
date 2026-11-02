@@ -10,6 +10,7 @@ export const allRoutes = [
     new Route("/cgv", "Conditions générales de vente", "/pages/public/cgv.html"),
     new Route("/404", "Page non trouvée", "/pages/public/404.html"),
     new Route("/inscription","Inscrivez-vous","/pages/auth/signup.php"),
+    new Route("/mon-compte","Mon espace","/pages/auth/user-account.php"),
 ];
 
 //Le titre s'affiche comme ceci : Route.titre - websitename

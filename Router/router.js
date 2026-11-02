@@ -23,6 +23,32 @@ const getRouteByUrl = (url) => {
 
 // Fonction pour charger le contenu de la page
 const LoadContentPage = async () => {
+  // Vérifier l'accès à la page Mon compte
+    if (window.location.pathname === '/mon-compte') {
+
+        try {
+            const reponse = await fetch('/api/session.php');
+
+            if (!reponse.ok) {
+                throw new Error('Impossible de vérifier la session.');
+            }
+
+            const session = await reponse.json();
+
+            // Visiteur non connecté : redirection vers l'inscription
+            if (!session.connecte) {
+                window.history.replaceState({}, '', '/inscription');
+
+            // Employé ou administrateur : redirection vers l'accueil
+            } else if (session.role !== 'utilisateur') {
+                window.history.replaceState({}, '', '/');
+            }
+
+        } catch (erreur) {
+            console.error(erreur);
+            window.history.replaceState({}, '', '/inscription');
+        }
+    }
   const path = window.location.pathname;
   // Récupération de l'URL actuelle
   const actualRoute = getRouteByUrl(path);
@@ -30,9 +56,10 @@ const LoadContentPage = async () => {
   const html = await fetch(actualRoute.pathHtml).then((data) => data.text());
   // Ajout du contenu HTML à l'élément avec l'ID "main-page"
   document.getElementById("main-page").innerHTML = html;
-
+  // Signaler que le contenu de la page a été chargé
+  document.dispatchEvent(new Event('pageChargee'));
     // Masquer la section contact commune sur la page du formulaire
-const contactSection = document.getElementById("contact");
+  const contactSection = document.getElementById("contact");
 
 if (contactSection) {
     contactSection.classList.toggle(
