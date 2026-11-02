@@ -44,7 +44,7 @@ document.addEventListener('show.bs.modal', async function (event) {
 
 /* BOUTON COMMANDER CE MENU */
 
-document.addEventListener('click', function(event) {
+document.addEventListener('click', async function(event) {
 
     // Récupérer le bouton Commander
     const bouton = event.target.closest('#menu-modal-order');
@@ -60,35 +60,67 @@ document.addEventListener('click', function(event) {
         return;
     }
 
-    // Mémoriser le menu choisi
-    sessionStorage.setItem('menuIdEnAttente', menuId);
+    try {
 
-    // Récupérer les deux modales
-    const modalMenu = document.getElementById('modal-menu');
-    const modalConnexion = document.getElementById('modal-connexion');
+        // Vérifier si le client est connecté
+        const reponse = await fetch('/api/session.php');
 
-    if (!modalMenu || !modalConnexion) {
-        return;
+        if (!reponse.ok) {
+            throw new Error('Erreur lors de la vérification de la session.');
+        }
+
+        const session = await reponse.json();
+
+        // Mémoriser le menu choisi
+        sessionStorage.setItem('menuIdEnAttente', menuId);
+
+        // Récupérer les deux modales
+        const modalMenu = document.getElementById('modal-menu');
+        const modalConnexion = document.getElementById('modal-connexion');
+
+        if (!modalMenu || !modalConnexion) {
+            return;
+        }
+
+        // Attendre la fermeture de la modale du menu
+        modalMenu.addEventListener('hidden.bs.modal', function() {
+
+            if (!session.connecte) {
+
+                // Mémoriser que le client souhaite commander
+                sessionStorage.setItem('commandeApresConnexion', 'true');
+
+                // Visiteur non connecté : afficher la connexion
+                const connexion = bootstrap.Modal.getOrCreateInstance(modalConnexion);
+                connexion.show();
+
+            } else if (session.role === 'utilisateur') {
+
+                // Client connecté : accéder à la commande
+                window.history.pushState({}, '', '/commande');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+
+            } else {
+
+                // Employé ou administrateur
+                alert('Cette fonctionnalité est réservée aux clients.');
+
+            }
+
+        }, { once: true });
+
+        // Fermer la modale du menu
+        const menu = bootstrap.Modal.getInstance(modalMenu);
+
+        if (menu) {
+            menu.hide();
+        }
+
+    } catch (erreur) {
+
+        console.error(erreur);
+        alert('Impossible de vérifier votre connexion.');
+
     }
 
-    // Attendre la fermeture de la modale du menu
-    modalMenu.addEventListener('hidden.bs.modal', function() {
-
-        // Ouvrir la modale de connexion
-        const connexion = bootstrap.Modal.getOrCreateInstance(modalConnexion);
-        connexion.show();
-
-    }, { once: true });
-
-    // Fermer la modale du menu
-    const menu = bootstrap.Modal.getInstance(modalMenu);
-
-    if (menu) {
-        menu.hide();
-    }
-
-});
-
-document.getElementById('form-connexion').addEventListener('submit', function(event) {
-    event.preventDefault();
 });

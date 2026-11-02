@@ -43,9 +43,39 @@
                   <li class="nav-item">
                     <a class="nav-link" href="/contact">Contact</a>
                   </li>
-                  <li class="nav-item">
-                    <a class="btn btn-primary login" href="#">Espace client</a>
+
+                  <!-- Visiteur non connecté -->
+                  <li class="nav-item" id="nav-visiteur">
+                      <button
+                          type="button"
+                          class="btn btn-primary login"
+                          data-bs-toggle="modal"
+                          data-bs-target="#modal-connexion"
+                      >
+                          Espace client
+                      </button>
                   </li>
+
+                  <!-- Utilisateur connecté -->
+                  <li class="nav-item d-none" id="nav-connecte">
+
+                      <div class="d-flex align-items-center gap-3">
+
+                          <span class="nav-link">
+                              Bonjour <span id="nav-prenom"></span>
+                          </span>
+
+                          <button
+                              type="button"
+                              class="btn btn-outline-secondary"
+                              id="nav-deconnexion"
+                          >
+                              Se déconnecter
+                          </button>
+
+                      </div>
+                  </li>
+
                 </ul>
               </div>
             </div>
@@ -133,7 +163,7 @@
                 </p>
 
                 <!-- Formulaire -->
-                <form id="form-connexion">
+                <form id="form-connexion" method="post">
 
                     <div class="mb-3">
                         <label for="connexion-email" class="form-label">
@@ -171,6 +201,14 @@
                         Se connecter
                         <i class="bi bi-arrow-right ms-3"></i>
                     </button>
+                    
+                    <!-- Message de confirmation ou d'erreur -->
+                    <div
+                        id="connexion-feedback"
+                        class="mt-3"
+                        role="status"
+                        aria-live="polite"
+                    ></div>
 
                 </form>
 
@@ -191,6 +229,7 @@
     <script src="/js/menu-filters.js" defer></script>
     <script src="/js/contact.js" defer></script>
     <script src="/js/signup.js" defer></script>
+    <script src="/js/signin.js" defer></script>
     
 </body>
 </html>
