@@ -22,6 +22,28 @@ CREATE TABLE compte (
     actif BOOLEAN NOT NULL DEFAULT TRUE
 );
 
+-- ==========================================
+-- TABLE : REINITIALISATION MOT DE PASSE
+-- ==========================================
+
+CREATE TABLE reinitialisation_mot_de_passe (
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    compte_id INT NOT NULL,
+
+    jeton_hash CHAR(64) NOT NULL UNIQUE,
+
+    date_creation DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    date_expiration DATETIME NOT NULL,
+
+    date_utilisation DATETIME DEFAULT NULL,
+
+    FOREIGN KEY (compte_id) REFERENCES compte(id)
+        ON DELETE CASCADE
+
+);
 
 -- ==========================================
 -- TABLE : THEME

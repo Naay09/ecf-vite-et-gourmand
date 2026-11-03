@@ -11,6 +11,9 @@ export const allRoutes = [
     new Route("/404", "Page non trouvée", "/pages/public/404.html"),
     new Route("/inscription","Inscrivez-vous","/pages/auth/signup.php"),
     new Route("/mon-compte","Mon espace","/pages/auth/user-account.php"),
+    new Route("/mot-de-passe-oublie","Mot de passe oublié","/pages/auth/forgot-password.php"),
+    new Route("/reinitialiser-mot-de-passe","Réinitialiser mon mot de passe","/pages/auth/reinitialiser-mot-de-passe.php"),
+    
 ];
 
 //Le titre s'affiche comme ceci : Route.titre - websitename
