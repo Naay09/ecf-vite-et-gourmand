@@ -13,6 +13,7 @@ export const allRoutes = [
     new Route("/mon-compte","Mon espace","/pages/auth/user-account.php"),
     new Route("/mot-de-passe-oublie","Mot de passe oublié","/pages/auth/forgot-password.php"),
     new Route("/reinitialiser-mot-de-passe","Réinitialiser mon mot de passe","/pages/auth/reinitialiser-mot-de-passe.php"),
+    new Route("/commande","Page de commande","/pages/commandes/commande.php"),
     
 ];
 

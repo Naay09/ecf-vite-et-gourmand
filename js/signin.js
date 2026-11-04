@@ -69,6 +69,9 @@ document.addEventListener('submit', async function(event) {
             // Actualiser le header
             await actualiserNavigation();
 
+            // Signaler que l'utilisateur vient de se connecter
+            document.dispatchEvent(new Event('connexionReussie'));
+
         } else {
 
             // Connexion refusée
