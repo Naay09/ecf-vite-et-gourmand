@@ -151,3 +151,353 @@
     </div>
 
 </section>
+
+<!-- MES COMMANDES -->
+<section class="contact-form-section" id="section-mes-commandes">
+
+    <div class="heading">
+
+        <div class="eyebrow">VOTRE ESPACE CLIENT</div>
+
+        <h2>Mes <em>commandes.</em></h2>
+
+        <p class="contact-form-note mb-4">
+            Retrouvez vos commandes et consultez
+            les informations de vos prestations.
+        </p>
+
+        <!-- Message de chargement ou d'erreur -->
+        <div
+            id="mes-commandes-feedback"
+            class="mb-4"
+            role="status"
+            aria-live="polite"
+        ></div>
+
+        <!-- Liste des commandes -->
+        <div
+            id="mes-commandes-liste"
+            class="row g-4"
+        ></div>
+
+    </div>
+
+</section>
+
+<!-- MODALE DÉTAIL COMMANDE -->
+
+<div
+    class="modal fade"
+    id="modal-detail-commande"
+    tabindex="-1"
+    aria-labelledby="modal-detail-commande-titre"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+
+        <div class="modal-content">
+
+            <!-- En-tête -->
+            <div class="modal-header">
+
+                <h2
+                    class="modal-title fs-4"
+                    id="modal-detail-commande-titre"
+                >
+                    Détail de votre commande
+                </h2>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Fermer"
+                ></button>
+
+            </div>
+
+            <!-- Contenu -->
+            <div class="modal-body">
+
+                <div
+                    id="detail-commande-feedback"
+                    role="status"
+                    aria-live="polite"
+                ></div>
+
+                <div id="detail-commande-contenu" class="d-none">
+
+                    <!-- PRESTATION -->
+                    <h3 class="h5 mb-3">Votre prestation</h3>
+
+                    <p><strong>Menu :</strong> <span id="detail-menu"></span></p>
+                    <p><strong>Date :</strong> <span id="detail-date"></span></p>
+                    <p><strong>Heure :</strong> <span id="detail-heure"></span></p>
+                    <p><strong>Convives :</strong> <span id="detail-convives"></span></p>
+
+                    <p>
+                        <strong>Livraison :</strong>
+                        <span id="detail-adresse"></span>
+                    </p>
+
+                    <p>
+                        <strong>Statut :</strong>
+                        <span id="detail-statut"></span>
+                    </p>
+
+                    <hr class="my-4">
+
+                    <!-- PRIX -->
+                    <h3 class="h5 mb-3">Détail du prix</h3>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Prix du menu</span>
+                        <span id="detail-prix-menu"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Remise</span>
+                        <span id="detail-remise"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Livraison</span>
+                        <span id="detail-livraison"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-3">
+                        <strong>Total</strong>
+                        <strong id="detail-total"></strong>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- SUIVI DE COMMANDE -->
+                    <h3 class="h5 mb-3">Suivi de votre commande</h3>
+
+                    <p
+                        id="detail-suivi-message"
+                        class="contact-form-note"
+                    ></p>
+
+                    <ul
+                        id="detail-suivi-liste"
+                        class="list-group list-group-flush"
+                    ></ul>
+
+                </div>
+
+                <!-- FORMULAIRE DE MODIFICATION D'UNE COMMANDE -->
+
+                <form id="form-modifier-commande" class="d-none" method="post">
+
+                    <!-- Identifiant de la commande -->
+                    <input type="hidden" name="commande_id" id="modif-commande-id">
+
+                    <!-- Jeton CSRF -->
+                    <input type="hidden" name="csrf_token" id="modif-commande-csrf">
+
+                    <h3 class="h5 mb-4">Modifier votre commande</h3>
+
+                    <!-- MENU NON MODIFIABLE -->
+
+                    <div class="mb-4">
+
+                        <label class="form-label">Menu sélectionné</label>
+
+                        <p id="modif-menu" class="fw-semibold mb-1"></p>
+
+                        <small class="form-text">
+                            Le menu ne peut pas être modifié.
+                        </small>
+
+                    </div>
+
+                    <!-- COORDONNÉES DU CLIENT -->
+
+                    <h4 class="h6 mt-4 mb-3">Vos coordonnées</h4>
+
+                    <div class="row g-3">
+
+                        <div class="col-12 col-md-6">
+                            <label for="modif-prenom" class="form-label">Prénom *</label>
+                            <input type="text" class="form-control"
+                                id="modif-prenom" name="prenom_client"
+                                maxlength="100" required>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="modif-nom" class="form-label">Nom *</label>
+                            <input type="text" class="form-control"
+                                id="modif-nom" name="nom_client"
+                                maxlength="100" required>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="modif-email" class="form-label">E-mail *</label>
+                            <input type="email" class="form-control"
+                                id="modif-email" name="email_client"
+                                maxlength="255" required>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="modif-telephone" class="form-label">Téléphone *</label>
+                            <input type="tel" class="form-control"
+                                id="modif-telephone" name="telephone_client"
+                                maxlength="20" required>
+                        </div>
+
+                    </div>
+
+                    <!-- INFORMATIONS DE PRESTATION -->
+
+                    <h4 class="h6 mt-4 mb-3">Votre prestation</h4>
+
+                    <div class="row g-3">
+
+                        <div class="col-12">
+                            <label for="modif-adresse" class="form-label">
+                                Adresse de livraison *
+                            </label>
+                            <input type="text" class="form-control"
+                                id="modif-adresse" name="adresse_livraison"
+                                required>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="modif-ville" class="form-label">
+                                Ville de livraison *
+                            </label>
+                            <input type="text" class="form-control"
+                                id="modif-ville" name="ville_livraison"
+                                maxlength="100" required>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="modif-date" class="form-label">
+                                Date de prestation *
+                            </label>
+                            <input type="date" class="form-control"
+                                id="modif-date" name="date_prestation"
+                                required>
+                                <small id="modif-date-info" class="form-text"></small>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="modif-heure" class="form-label">
+                                Heure de livraison *
+                            </label>
+                            <input type="time" class="form-control"
+                                id="modif-heure" name="heure_livraison"
+                                required>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="modif-convives" class="form-label">
+                                Nombre de convives *
+                            </label>
+                            <input type="number" class="form-control"
+                                id="modif-convives" name="nb_personnes"
+                                min="1" step="1" required>
+                                <small id="modif-convives-info" class="form-text"></small>
+                        </div>
+
+                        <div class="col-12 col-md-6" id="modif-distance-bloc">
+                            <label for="modif-distance" class="form-label">
+                                Distance de livraison (km)
+                            </label>
+                            <input type="number" class="form-control"
+                                id="modif-distance" name="distance_livraison_km"
+                                min="0" step="0.1">
+                        </div>
+
+                    </div>
+
+                    <!-- RÉCAPITULATIF -->
+
+                    <h4 class="h6 mt-4 mb-3">Nouveau récapitulatif</h4>
+
+                    <div class="border rounded p-3">
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Prix du menu</span>
+                            <span id="modif-prix-menu">—</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Remise</span>
+                            <span id="modif-remise">—</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Livraison</span>
+                            <span id="modif-livraison">—</span>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between">
+                            <strong>Nouveau total</strong>
+                            <strong id="modif-total">—</strong>
+                        </div>
+
+                    </div>
+
+                    <!-- MESSAGES -->
+
+                    <div
+                        id="modif-commande-feedback"
+                        class="mt-3"
+                        role="status"
+                        aria-live="polite"
+                    ></div>
+
+                    <!-- ACTIONS -->
+
+                    <div class="d-flex flex-wrap gap-2 mt-4">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            id="modif-retour-detail"
+                        >
+                            Retour au détail
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            id="modif-enregistrer"
+                            disabled
+                        >
+                            Enregistrer les modifications
+                        </button>
+
+                    </div>
+
+                </form>
+
+
+            </div>
+
+            <!-- Pied de la modale -->
+            <div class="modal-footer">
+
+                <!-- Emplacement pour US_009 et US_010 -->
+                <div id="detail-commande-actions" class="d-flex gap-2"></div>
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Fermer
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+

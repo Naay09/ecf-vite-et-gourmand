@@ -23,6 +23,7 @@ const getRouteByUrl = (url) => {
 
 // Fonction pour charger le contenu de la page
 const LoadContentPage = async () => {
+  let ouvrirModaleConnexion = false;
   // Vérifier l'accès à la page Mon compte
     if (window.location.pathname === '/mon-compte') {
 
@@ -49,6 +50,51 @@ const LoadContentPage = async () => {
             window.history.replaceState({}, '', '/inscription');
         }
     }
+
+    // Vérifier l'accès à la page Commande
+    if (window.location.pathname === '/commande') {
+
+        try {
+
+            const reponse = await fetch('/api/session.php', {
+                cache: 'no-store'
+            });
+
+            if (!reponse.ok) {
+                throw new Error('Impossible de vérifier la session.');
+            }
+
+            const session = await reponse.json();
+
+            // Visiteur non connecté
+            if (!session.connecte) {
+
+                // Revenir à la commande après connexion
+                sessionStorage.setItem('commandeApresConnexion', 'true');
+
+                // Redirection vers l'accueil
+                window.history.replaceState({}, '', '/');
+
+                // Demander l'ouverture de la modale
+                ouvrirModaleConnexion = true;
+
+            // Employé ou administrateur
+            } else if (session.role !== 'utilisateur') {
+
+                window.history.replaceState({}, '', '/');
+
+            }
+
+        } catch (erreur) {
+
+            console.error(erreur);
+
+            // Refuser l'accès si la session ne peut pas être vérifiée
+            window.history.replaceState({}, '', '/');
+
+        }
+    }
+
   const path = window.location.pathname;
   // Récupération de l'URL actuelle
   const actualRoute = getRouteByUrl(path);
@@ -60,6 +106,18 @@ const LoadContentPage = async () => {
   document.dispatchEvent(new Event('pageChargee'));
     // Masquer la section contact commune sur la page du formulaire
   const contactSection = document.getElementById("contact");
+    // Ouvrir la connexion si le visiteur voulait accéder à /commande
+  if (ouvrirModaleConnexion) {
+
+      const modalConnexion = document.getElementById('modal-connexion');
+
+      if (modalConnexion) {
+
+          const modal = bootstrap.Modal.getOrCreateInstance(modalConnexion);
+
+          modal.show();
+      }
+  }
 
 if (contactSection) {
     contactSection.classList.toggle(

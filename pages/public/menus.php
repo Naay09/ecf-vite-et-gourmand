@@ -14,7 +14,9 @@
         <p> Des menus généreux, imaginés au fil des saisons et préparés avec soin pour 
             réunir ceux que vous aimez autour d'une belle table. </p>
 
-        <a class="btn btn-light button" href="#menu-section">Découvrir nos menus <i class="bi bi-arrow-down"></i> </a>
+        <p>Consulter l'ensemble des menus ci dessous ou cliquer sur le bouton pour commander.</p>
+
+        <a class="btn btn-light button" href="/commande">Commander un menu</a>
       
     </div>
     <div class="hero-art">
