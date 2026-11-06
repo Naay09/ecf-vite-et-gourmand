@@ -48,15 +48,29 @@ document.addEventListener('submit', async function(event) {
             const commandeEnAttente =
                 sessionStorage.getItem('commandeApresConnexion') === 'true';
 
+            // CAS 1 : Un client se connecte pour passer commande
             if (commandeEnAttente && resultat.role === 'utilisateur') {
 
-                // La demande de connexion a été traitée
                 sessionStorage.removeItem('commandeApresConnexion');
 
-                // Attendre la fermeture de la modale avant de changer de page
                 modale.addEventListener('hidden.bs.modal', function() {
 
                     window.history.pushState({}, '', '/commande');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+
+                }, { once: true });
+
+            }
+
+            // CAS 2 : Un employé ou administrateur se connecte
+            else if (
+                resultat.role === 'employe' ||
+                resultat.role === 'administrateur'
+            ) {
+
+                modale.addEventListener('hidden.bs.modal', function() {
+
+                    window.history.pushState({}, '', '/espace-employe');
                     window.dispatchEvent(new PopStateEvent('popstate'));
 
                 }, { once: true });
@@ -120,6 +134,24 @@ async function actualiserNavigation() {
             connecte.classList.remove('d-none');
 
             prenom.textContent = session.prenom;
+
+            // Récupérer le lien qui contient le prénom
+            const lienEspace = prenom.closest('a');
+
+            if (lienEspace) {
+
+                // Employé ou administrateur
+                if (
+                    session.role === 'employe' ||
+                    session.role === 'administrateur'
+                ) {
+                    lienEspace.href = '/espace-employe';
+
+                } else {
+                    // Client
+                    lienEspace.href = '/mon-compte';
+                }
+            }
 
         } else {
 
