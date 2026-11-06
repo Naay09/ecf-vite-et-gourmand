@@ -377,6 +377,11 @@ document.addEventListener('click', async function(event) {
         const commande = resultat.commande;
         const historique = resultat.historique;
 
+        // Conserver les informations nécessaires à la modification
+        const boutonStatut = document.getElementById('employe-enregistrer-statut');
+
+        boutonStatut.dataset.commandeId = commande.id;
+        boutonStatut.dataset.csrfToken = resultat.csrf_token;
 
         // PRÉPARER LE CHANGEMENT DE STATUT
 
@@ -410,44 +415,59 @@ document.addEventListener('click', async function(event) {
 
         // Définir les transitions possibles
         const transitions = {
-            'en_attente': {
-                valeur: 'accepte',
-                libelle: 'Acceptée'
-            },
-            'accepte': {
-                valeur: 'en_preparation',
-                libelle: 'En préparation'
-            },
-            'en_preparation': {
-                valeur: 'en_cours_de_livraison',
-                libelle: 'En cours de livraison'
-            },
-            'en_cours_de_livraison': {
-                valeur: 'livre',
-                libelle: 'Livrée'
-            }
+
+            'en_attente': [
+                { valeur: 'accepte', libelle: 'Acceptée' }
+            ],
+
+            'accepte': [
+                { valeur: 'en_preparation', libelle: 'En préparation' }
+            ],
+
+            'en_preparation': [
+                {
+                    valeur: 'en_cours_de_livraison',
+                    libelle: 'En cours de livraison'
+                }
+            ],
+
+            'en_cours_de_livraison': [
+                { valeur: 'livre', libelle: 'Livrée' }
+            ],
+
+            'livre': [
+                {
+                    valeur: 'terminee',
+                    libelle: 'Terminée (aucun matériel prêté)'
+                },
+                {
+                    valeur: 'en_attente_retour_materiel',
+                    libelle: 'En attente du retour du matériel'
+                }
+            ]
         };
 
-        // Vérifier si une étape suivante existe
-        const prochaineEtape = transitions[statutActuel];
+        // Récupérer les prochaines étapes
+        const prochainesEtapes = transitions[statutActuel];
 
-        if (prochaineEtape) {
+        // Afficher les choix autorisés
+        if (prochainesEtapes) {
 
-            // Afficher le statut actuel
             document.getElementById('employe-statut-actuel')
                 .textContent = formaterStatutEmploye(
                     commande.statut_courant
                 );
 
-            // Créer une option dans la liste
-            const option = document.createElement('option');
+            for (const etape of prochainesEtapes) {
 
-            option.value = prochaineEtape.valeur;
-            option.textContent = prochaineEtape.libelle;
+                const option = document.createElement('option');
 
-            selectStatut.appendChild(option);
+                option.value = etape.valeur;
+                option.textContent = etape.libelle;
 
-            // Afficher la section
+                selectStatut.appendChild(option);
+            }
+
             sectionStatut.classList.remove('d-none');
         }
 
@@ -583,6 +603,113 @@ document.addEventListener('input', function(event) {
 
     if (event.target.id === 'employe-recherche-commande') {
         filtrerCommandesEmploye();
+    }
+
+});
+
+// Activer le bouton lorsqu'un nouveau statut est sélectionné
+document.addEventListener('change', function(event) {
+
+    if (event.target.id !== 'employe-nouveau-statut') {
+        return;
+    }
+
+    const bouton = document.getElementById('employe-enregistrer-statut');
+
+    bouton.disabled = event.target.value === '';
+
+});
+
+
+/* ENREGISTRER LE NOUVEAU STATUT */
+
+document.addEventListener('click', async function(event) {
+
+    if (event.target.id !== 'employe-enregistrer-statut') {
+        return;
+    }
+
+    const bouton = event.target;
+
+    const select = document.getElementById('employe-nouveau-statut');
+
+    const feedback = document.getElementById('employe-statut-feedback');
+
+    // Récupérer les informations
+    const commandeId = bouton.dataset.commandeId;
+    const nouveauStatut = select.value;
+    const csrfToken = bouton.dataset.csrfToken;
+
+    if (!commandeId || !nouveauStatut || !csrfToken) {
+        return;
+    }
+
+    // Désactiver le bouton pendant l'enregistrement
+    bouton.disabled = true;
+
+    feedback.textContent = 'Enregistrement en cours...';
+    feedback.className = 'mt-3 text-secondary';
+
+    // Préparer les données
+    const donnees = new FormData();
+
+    donnees.append('commande_id', commandeId);
+    donnees.append('nouveau_statut', nouveauStatut);
+    donnees.append('csrf_token', csrfToken);
+
+    try {
+
+        // Envoyer les informations à PHP
+        const reponse = await fetch('/api/modifier-statut-commande.php', {
+            method: 'POST',
+            body: donnees
+        });
+
+        const resultat = await reponse.json();
+
+        if (!reponse.ok || !resultat.success) {
+
+            feedback.textContent =
+                resultat.message || 'Impossible de modifier le statut.';
+
+            feedback.className = 'mt-3 text-danger';
+
+            bouton.disabled = false;
+
+            return;
+        }
+
+        // Confirmation
+        feedback.textContent = 'Le statut a été mis à jour.';
+        feedback.className = 'mt-3 text-success';
+
+        // Actualiser les cartes et les indicateurs
+        await chargerCommandesEmploye();
+
+        // Retrouver la nouvelle carte de cette commande
+        const boutonsDetail = document.querySelectorAll(
+            '.btn-detail-employe'
+        );
+
+        for (const boutonDetail of boutonsDetail) {
+
+            if (boutonDetail.dataset.commandeId === commandeId) {
+
+                // Recharger les informations dans la modale
+                boutonDetail.click();
+
+                break;
+            }
+        }
+
+    } catch (erreur) {
+
+        console.error(erreur);
+
+        feedback.textContent = 'Impossible de modifier le statut.';
+        feedback.className = 'mt-3 text-danger';
+
+        bouton.disabled = false;
     }
 
 });

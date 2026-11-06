@@ -21,6 +21,11 @@ require __DIR__ . '/../includes/auth.php';
 
 verifierAcces(['employe', 'administrateur']);
 
+// Créer un jeton CSRF pour les actions de l'employé
+if (empty($_SESSION['csrf_employe'])) {
+    $_SESSION['csrf_employe'] = bin2hex(random_bytes(32));
+}
+
 // Connexion à MySQL
 require __DIR__ . '/../config/db-connection.php';
 
@@ -92,7 +97,8 @@ try {
     echo json_encode([
         'success' => true,
         'commande' => $commande,
-        'historique' => $historique
+        'historique' => $historique,
+        'csrf_token' => $_SESSION['csrf_employe']
     ]);
 
 } catch (PDOException $erreur) {
