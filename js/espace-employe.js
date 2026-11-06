@@ -397,6 +397,9 @@ document.addEventListener('click', async function(event) {
 
         formulaireContact.dataset.csrfToken = resultat.csrf_token;
 
+        // Afficher l'historique des contacts
+        afficherHistoriqueContacts(resultat.contacts);
+
         /* ACTIONS SUR UNE COMMANDE */
 
         // Récupérer l'emplacement des boutons
@@ -961,6 +964,34 @@ document.addEventListener('submit', async function(event) {
         formulaire.dataset.contactId = resultat.contact_id;
         formulaire.dataset.contactEnregistre = 'oui';
 
+        // Actualiser l'historique des contacts
+        try {
+
+            const commandeId = formulaire.elements['commande_id'].value;
+
+            const reponseDetail = await fetch(
+                '/api/detail-commande-employe.php?id=' + encodeURIComponent(commandeId)
+            );
+
+            if (reponseDetail.ok) {
+
+                const detailActualise = await reponseDetail.json();
+
+                if (detailActualise.success) {
+
+                    afficherHistoriqueContacts(detailActualise.contacts);
+
+                }
+            }
+
+        } catch (erreur) {
+
+            console.error(
+                'Impossible d’actualiser l’historique des contacts :',
+                erreur
+            );
+        }
+
         // Afficher la confirmation
         feedback.textContent = 'Le contact avec le client a bien été enregistré.';
         feedback.className = 'mt-3 text-success';
@@ -983,3 +1014,92 @@ document.addEventListener('submit', async function(event) {
 
 });
 
+/* AFFICHER L'HISTORIQUE DES CONTACTS */
+
+function afficherHistoriqueContacts(contacts) {
+
+    const liste = document.getElementById('employe-contacts-liste');
+
+    // Vider l'ancien historique
+    liste.innerHTML = '';
+
+    // Aucun contact enregistré
+    if (contacts.length === 0) {
+
+        const message = document.createElement('p');
+
+        message.className = 'text-muted mb-0';
+        message.textContent = 'Aucun contact enregistré pour cette commande.';
+
+        liste.appendChild(message);
+
+        return;
+    }
+
+    // Afficher chaque contact
+    for (const contact of contacts) {
+
+        // Créer une carte Bootstrap
+        const carte = document.createElement('div');
+
+        carte.className = 'border rounded p-3';
+
+        // Action effectuée
+        const action = document.createElement('h4');
+
+        action.className = 'h6 mb-2';
+
+        if (contact.action === 'annulation') {
+            action.textContent = 'Annulation';
+        } else {
+            action.textContent = 'Modification';
+        }
+
+        // Mode de contact
+        const canal = document.createElement('p');
+
+        canal.className = 'mb-2';
+
+        if (contact.canal === 'telephone') {
+            canal.textContent = 'Contact par téléphone';
+        } else {
+            canal.textContent = 'Contact par e-mail';
+        }
+
+        // Motif
+        const motif = document.createElement('p');
+
+        motif.className = 'mb-2';
+        motif.textContent = contact.motif;
+
+        // Employé
+        const employe = document.createElement('p');
+
+        employe.className = 'small text-muted mb-1';
+
+        employe.textContent = 'Par ' +
+            (contact.employe_prenom || '') + ' ' +
+            (contact.employe_nom || '');
+
+        // Date et heure
+        const date = document.createElement('p');
+
+        date.className = 'small text-muted mb-0';
+
+        const dateContact = new Date(
+            contact.date_heure.replace(' ', 'T')
+        );
+
+        date.textContent = dateContact.toLocaleString('fr-FR');
+
+        // Ajouter les éléments à la carte
+        carte.appendChild(action);
+        carte.appendChild(canal);
+        carte.appendChild(motif);
+        carte.appendChild(employe);
+        carte.appendChild(date);
+
+        // Ajouter la carte à la liste
+        liste.appendChild(carte);
+    }
+}

@@ -378,6 +378,23 @@
 
                     </div>
 
+                    <!-- HISTORIQUE DES CONTACTS -->
+
+                    <section id="employe-contacts-section" class="mt-4">
+                        
+                        <hr class="my-4">
+
+                        <h3 class="h5 mb-3">
+                            Historique des contacts
+                        </h3>
+
+                        <div
+                            id="employe-contacts-liste"
+                            class="d-flex flex-column gap-3"
+                        ></div>
+
+                    </section>
+
                 </div>
 
                 <!-- CONTACT PRÉALABLE AVEC LE CLIENT -->

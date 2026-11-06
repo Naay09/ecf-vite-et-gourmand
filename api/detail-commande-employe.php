@@ -93,11 +93,38 @@ try {
 
     $historique = $requete->fetchAll(PDO::FETCH_ASSOC);
 
+    /* HISTORIQUE DES CONTACTS AVEC LE CLIENT */
+
+    // Préparer la requête
+    $requeteContacts = $dbConnection->prepare(
+        "SELECT
+            cc.id,
+            cc.date_heure,
+            cc.canal,
+            cc.action,
+            cc.motif,
+            c.prenom AS employe_prenom,
+            c.nom AS employe_nom
+        FROM contact_commande cc
+        LEFT JOIN compte c ON cc.compte_id = c.id
+        WHERE cc.commande_id = :commande_id
+        ORDER BY cc.date_heure ASC, cc.id ASC"
+    );
+
+    // Exécuter la requête
+    $requeteContacts->execute([
+        'commande_id' => $commande['id']
+    ]);
+
+    // Récupérer tous les contacts
+    $contacts = $requeteContacts->fetchAll(PDO::FETCH_ASSOC);
+
     // Envoyer les informations
     echo json_encode([
         'success' => true,
         'commande' => $commande,
         'historique' => $historique,
+        'contacts' => $contacts,
         'csrf_token' => $_SESSION['csrf_employe']
     ]);
 
