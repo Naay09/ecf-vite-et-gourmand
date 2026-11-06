@@ -340,6 +340,9 @@ document.addEventListener('click', async function(event) {
     // Réinitialiser l'affichage
     contenu.classList.add('d-none');
     historiqueListe.innerHTML = '';
+    // Masquer les anciennes actions de statut
+    document.getElementById('employe-statut-section')
+        .classList.add('d-none');
 
     document.getElementById('employe-detail-actions').innerHTML = '';
 
@@ -373,6 +376,80 @@ document.addEventListener('click', async function(event) {
 
         const commande = resultat.commande;
         const historique = resultat.historique;
+
+
+        // PRÉPARER LE CHANGEMENT DE STATUT
+
+        const sectionStatut = document.getElementById(
+            'employe-statut-section'
+        );
+
+        const selectStatut = document.getElementById(
+            'employe-nouveau-statut'
+        );
+
+        const boutonEnregistrer = document.getElementById(
+            'employe-enregistrer-statut'
+        );
+
+        // Réinitialiser les éléments
+        sectionStatut.classList.add('d-none');
+
+        selectStatut.innerHTML =
+            '<option value="">Choisissez la prochaine étape</option>';
+
+        boutonEnregistrer.disabled = true;
+
+        document.getElementById('employe-statut-feedback')
+            .textContent = '';
+
+        // Récupérer le statut actuel
+        const statutActuel = normaliserTexteEmploye(
+            commande.statut_courant
+        );
+
+        // Définir les transitions possibles
+        const transitions = {
+            'en_attente': {
+                valeur: 'accepte',
+                libelle: 'Acceptée'
+            },
+            'accepte': {
+                valeur: 'en_preparation',
+                libelle: 'En préparation'
+            },
+            'en_preparation': {
+                valeur: 'en_cours_de_livraison',
+                libelle: 'En cours de livraison'
+            },
+            'en_cours_de_livraison': {
+                valeur: 'livre',
+                libelle: 'Livrée'
+            }
+        };
+
+        // Vérifier si une étape suivante existe
+        const prochaineEtape = transitions[statutActuel];
+
+        if (prochaineEtape) {
+
+            // Afficher le statut actuel
+            document.getElementById('employe-statut-actuel')
+                .textContent = formaterStatutEmploye(
+                    commande.statut_courant
+                );
+
+            // Créer une option dans la liste
+            const option = document.createElement('option');
+
+            option.value = prochaineEtape.valeur;
+            option.textContent = prochaineEtape.libelle;
+
+            selectStatut.appendChild(option);
+
+            // Afficher la section
+            sectionStatut.classList.remove('d-none');
+        }
 
         // NUMÉRO
         document.getElementById('modal-commande-employe-titre')

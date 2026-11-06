@@ -327,6 +327,57 @@
                         class="list-group list-group-flush"
                     ></ul>
 
+                    <!-- MODIFICATION DU STATUT -->
+
+                    <div
+                        id="employe-statut-section"
+                        class="mt-4 d-none"
+                    >
+                        <hr class="my-4">
+
+                        <h3 class="h5 mb-3">
+                            Mettre à jour le statut
+                        </h3>
+
+                        <p class="mb-3">
+                            <strong>Statut actuel :</strong>
+                            <span id="employe-statut-actuel"></span>
+                        </p>
+
+                        <label
+                            for="employe-nouveau-statut"
+                            class="form-label"
+                        >
+                            Prochaine étape
+                        </label>
+
+                        <select
+                            id="employe-nouveau-statut"
+                            class="form-select"
+                        >
+                            <option value="">
+                                Choisissez la prochaine étape
+                            </option>
+                        </select>
+
+                        <button
+                            type="button"
+                            class="btn btn-primary mt-3"
+                            id="employe-enregistrer-statut"
+                            disabled
+                        >
+                            Enregistrer le statut
+                        </button>
+
+                        <div
+                            id="employe-statut-feedback"
+                            class="mt-3"
+                            role="status"
+                            aria-live="polite"
+                        ></div>
+
+                    </div>
+
                 </div>
 
             </div>
