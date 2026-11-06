@@ -340,6 +340,7 @@ document.addEventListener('click', async function(event) {
     // Réinitialiser l'affichage
     contenu.classList.add('d-none');
     historiqueListe.innerHTML = '';
+
     // Masquer les anciennes actions de statut
     document.getElementById('employe-statut-section')
         .classList.add('d-none');
@@ -586,7 +587,6 @@ document.addEventListener('DOMContentLoaded', chargerCommandesEmploye);
 // Chargement des pages avec notre routeur
 document.addEventListener('pageChargee', chargerCommandesEmploye);
 
-
 /* ÉCOUTEURS DES FILTRES */
 
 // Filtrer lors d'un changement de statut
@@ -680,7 +680,7 @@ document.addEventListener('click', async function(event) {
         }
 
         // Confirmation
-        feedback.textContent = 'Le statut a été mis à jour.';
+        feedback.textContent = resultat.message;
         feedback.className = 'mt-3 text-success';
 
         // Actualiser les cartes et les indicateurs

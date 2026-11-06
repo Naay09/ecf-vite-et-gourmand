@@ -105,7 +105,9 @@ try {
 
     // Récupérer et verrouiller la commande
     $requete = $dbConnection->prepare(
-        "SELECT statut_courant
+        "SELECT statut_courant,
+        prenom_client,
+        email_client
          FROM commande
          WHERE id = :id
          FOR UPDATE"
@@ -190,10 +192,70 @@ try {
     // Valider les modifications
     $dbConnection->commit();
 
+    /* ENVOYER UN E-MAIL SI LA COMMANDE EST TERMINÉE */
+
+    $emailEnvoye = null;
+
+    if ($nouveauStatut === 'terminee') {
+
+        $emailEnvoye = false;
+
+        try {
+
+            // Charger notre service d'envoi d'e-mails
+            require_once __DIR__ . '/../includes/mail-service.php';
+
+            // Préparer les informations
+            $numeroCommande = (int) $commandeId;
+
+            $prenomClient = htmlspecialchars(
+                $commande['prenom_client'],
+                ENT_QUOTES,
+                'UTF-8'
+            );
+
+            // Objet de l'e-mail
+            $sujet = 'Votre commande Vite & Gourmand est terminée';
+
+            // Contenu de l'e-mail
+        
+            $message = "Bonjour,\n\n"
+                . "Votre commande n°" . $numeroCommande . " est désormais terminée.\n\n"
+                . "Nous vous remercions d'avoir choisi Vite & Gourmand pour votre prestation.\n\n"
+                . "Nous serions ravis de connaître votre avis sur votre expérience.\n"
+                . "Vous pourrez le déposer depuis votre espace client.\n\n"
+                . "À bientôt,\n"
+                . "L'équipe Vite & Gourmand";
+
+            // Envoyer l'e-mail
+            $resultatMail = envoyerMail(
+                $commande['email_client'],
+                $sujet,
+                $message
+            );
+
+            if ($resultatMail === false) {
+                throw new Exception("L'envoi de l'e-mail a échoué.");
+            }
+
+            $emailEnvoye = true;
+
+        } catch (Throwable $erreurMail) {
+
+            error_log(
+                'Erreur e-mail commande : ' .
+                $erreurMail->getMessage()
+            );
+        }
+    }
+
     echo json_encode([
         'success' => true,
-        'message' => 'Le statut a été mis à jour.',
-        'nouveau_statut' => $nouveauStatut
+        'message' => $emailEnvoye === false
+            ? 'Le statut a été mis à jour, mais l’e-mail n’a pas pu être envoyé.'
+            : 'Le statut a été mis à jour.',
+        'nouveau_statut' => $nouveauStatut,
+        'email_envoye' => $emailEnvoye
     ]);
 
 } catch (PDOException $erreur) {
