@@ -1,0 +1,512 @@
+/* AFFICHER LES COMMANDES DANS L'ESPACE EMPLOYÉ */
+
+async function chargerCommandesEmploye() {
+
+    const liste = document.getElementById('employe-commandes-liste');
+
+    // Vérifier que nous sommes sur la page Employé
+    if (!liste) {
+        return;
+    }
+
+    const feedback = document.getElementById('employe-commandes-feedback');
+
+    // Vider la liste avant le chargement
+    liste.innerHTML = '';
+
+    feedback.textContent = 'Chargement des commandes...';
+    feedback.className = 'mb-4 text-secondary';
+
+    try {
+
+        // Récupérer les commandes depuis PHP
+        const reponse = await fetch('/api/commandes-employe.php', {
+            cache: 'no-store'
+        });
+
+        const resultat = await reponse.json();
+
+        if (!reponse.ok || !resultat.success) {
+
+            feedback.textContent =
+                resultat.message || 'Impossible de charger les commandes.';
+
+            feedback.className = 'mb-4 text-danger';
+            return;
+        }
+
+        const commandes = resultat.commandes;
+
+        // METTRE À JOUR LE TABLEAU DE BORD
+
+        let nombreAttente = 0;
+        let nombrePreparation = 0;
+
+        for (const commande of commandes) {
+
+            if (commande.statut_courant === 'en_attente') {
+                nombreAttente++;
+            }
+
+            if (commande.statut_courant === 'en_preparation') {
+                nombrePreparation++;
+            }
+        }
+
+        document.getElementById('employe-commandes-attente')
+            .textContent = nombreAttente;
+
+        document.getElementById('employe-commandes-preparation')
+            .textContent = nombrePreparation;
+
+        // Aucune commande
+        if (commandes.length === 0) {
+
+            feedback.textContent = 'Aucune commande enregistrée.';
+            return;
+        }
+
+        feedback.textContent = '';
+
+        // CRÉER LES CARTES DE COMMANDES
+
+        for (const commande of commandes) {
+
+            // Colonne Bootstrap
+            const colonne = document.createElement('div');
+            colonne.className = 'col-12 col-lg-6';
+
+            // Identifier les cartes de commande
+            colonne.classList.add('commande-employe');
+
+            // Conserver les informations utiles aux filtres
+            colonne.dataset.statut = normaliserTexteEmploye(
+                commande.statut_courant
+            );
+
+            colonne.dataset.client = normaliserTexteEmploye(
+                commande.prenom_client + ' ' +
+                commande.nom_client + ' ' +
+                commande.email_client
+            );
+
+            colonne.dataset.numero = commande.id;
+
+            // Carte
+            const carte = document.createElement('article');
+            carte.className = 'card h-100';
+
+            const contenu = document.createElement('div');
+            contenu.className = 'card-body';
+
+            // Numéro de commande
+            const titre = document.createElement('h3');
+            titre.className = 'h5 mb-3';
+            titre.textContent = 'Commande n°' + commande.id;
+
+            // Client
+            const client = document.createElement('p');
+            client.textContent =
+                'Client : ' +
+                commande.prenom_client + ' ' +
+                commande.nom_client;
+
+            // Menu
+            const menu = document.createElement('p');
+            menu.textContent =
+                'Menu : ' + (commande.menu_titre || 'Menu indisponible');
+
+            // Date de prestation
+            const date = document.createElement('p');
+
+            const dateFormatee = new Date(
+                commande.date_prestation + 'T12:00:00'
+            ).toLocaleDateString('fr-FR');
+
+            date.textContent = 'Prestation : ' + dateFormatee;
+
+            // Nombre de convives
+            const convives = document.createElement('p');
+            convives.textContent =
+                'Convives : ' + commande.nb_personnes;
+
+            
+            // Statut
+            const statut = document.createElement('p');
+
+            statut.textContent =
+                'Statut : ' +
+                commande.statut_courant.replaceAll('_', ' ');
+
+            // Définir la couleur selon le statut
+            if (
+                commande.statut_courant === 'en_attente' ||
+                commande.statut_courant === 'en_attente_retour_materiel'
+            ) {
+                statut.classList.add('text-secondary');
+            } else {
+                statut.classList.add('text-primary');
+            }
+
+            // Prix total
+            const total = document.createElement('p');
+            total.className = 'fw-semibold';
+
+            const prixFormate = Number(commande.total)
+                .toLocaleString('fr-FR', {
+                    style: 'currency',
+                    currency: 'EUR'
+                });
+
+            total.textContent = 'Total : ' + prixFormate;
+
+            // Bouton pour consulter la commande
+            const boutonDetail = document.createElement('button');
+
+            boutonDetail.type = 'button';
+            boutonDetail.className = 'btn btn-primary mt-3';
+
+            boutonDetail.textContent = 'Voir le détail';
+
+            // Conserver le numéro de commande
+            boutonDetail.dataset.commandeId = commande.id;
+
+            boutonDetail.classList.add('btn-detail-employe');
+
+            // Ajouter les éléments à la carte
+            contenu.appendChild(titre);
+            contenu.appendChild(client);
+            contenu.appendChild(menu);
+            contenu.appendChild(date);
+            contenu.appendChild(convives);
+            contenu.appendChild(statut);
+            contenu.appendChild(total);
+            contenu.appendChild(boutonDetail);
+
+            carte.appendChild(contenu);
+            colonne.appendChild(carte);
+            liste.appendChild(colonne);
+        }
+        // Appliquer les filtres après le chargement des commandes
+        filtrerCommandesEmploye();
+
+    } catch (erreur) {
+
+        feedback.textContent = 'Impossible de charger les commandes.';
+        feedback.className = 'mb-4 text-danger';
+
+        console.error(erreur);
+    }
+}
+
+
+/* NORMALISER LE TEXTE POUR LA RECHERCHE */
+
+function normaliserTexteEmploye(texte) {
+
+    return String(texte)
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+}
+
+
+/* FILTRER LES COMMANDES */
+
+function filtrerCommandesEmploye() {
+
+    const liste = document.getElementById('employe-commandes-liste');
+
+    if (!liste) {
+        return;
+    }
+
+    // Récupérer les filtres
+    const filtreStatut = document.getElementById('employe-filtre-statut');
+
+    const champRecherche = document.getElementById(
+        'employe-recherche-commande'
+    );
+
+    const resultat = document.getElementById(
+        'employe-filtres-resultat'
+    );
+
+    // Récupérer les valeurs choisies
+    const statutRecherche = filtreStatut.value;
+
+    const recherche = normaliserTexteEmploye(
+        champRecherche.value.trim()
+    );
+
+    // Récupérer toutes les cartes
+    const cartes = liste.querySelectorAll('.commande-employe');
+
+    let nombreResultats = 0;
+
+    for (const carte of cartes) {
+
+        // Vérifier le statut
+        const statutCorrespond =
+            statutRecherche === 'tous' ||
+            carte.dataset.statut === statutRecherche;
+
+        // Vérifier le nom, l'e-mail ou le numéro
+        const rechercheCorrespond =
+            carte.dataset.client.includes(recherche) ||
+            carte.dataset.numero.includes(recherche);
+
+        // Afficher uniquement les cartes correspondantes
+        if (statutCorrespond && rechercheCorrespond) {
+
+            carte.classList.remove('d-none');
+
+            nombreResultats++;
+
+        } else {
+            carte.classList.add('d-none');
+        }
+    }
+
+    // Afficher le nombre de résultats
+    resultat.textContent =
+        nombreResultats + ' commande(s) trouvée(s).';
+
+    if (nombreResultats === 0) {
+
+        resultat.textContent =
+            'Aucune commande ne correspond à votre recherche.';
+    }
+}
+
+
+/* AFFICHER LE DÉTAIL D'UNE COMMANDE */
+
+// Formater un prix
+function formaterPrixEmploye(montant) {
+
+    return Number(montant).toLocaleString('fr-FR', {
+        style: 'currency',
+        currency: 'EUR'
+    });
+}
+
+// Formater un statut
+function formaterStatutEmploye(statut) {
+
+    const noms = {
+        'en_attente': 'En attente',
+        'accepte': 'Acceptée',
+        'en_preparation': 'En préparation',
+        'en_cours_de_livraison': 'En cours de livraison',
+        'livre': 'Livrée',
+        'en_attente_retour_materiel': 'En attente du retour de matériel',
+        'terminee': 'Terminée',
+        'annulee': 'Annulée'
+    };
+
+    const valeur = normaliserTexteEmploye(statut);
+
+    return noms[valeur] || String(statut).replaceAll('_', ' ');
+}
+
+// Détecter les clics sur Voir le détail
+document.addEventListener('click', async function(event) {
+
+    const bouton = event.target.closest('.btn-detail-employe');
+
+    if (!bouton) {
+        return;
+    }
+
+    const commandeId = bouton.dataset.commandeId;
+
+    const modalElement = document.getElementById(
+        'modal-commande-employe'
+    );
+
+    const contenu = document.getElementById(
+        'employe-detail-contenu'
+    );
+
+    const feedback = document.getElementById(
+        'employe-detail-feedback'
+    );
+
+    const historiqueListe = document.getElementById(
+        'employe-detail-historique'
+    );
+
+    // Réinitialiser l'affichage
+    contenu.classList.add('d-none');
+    historiqueListe.innerHTML = '';
+
+    document.getElementById('employe-detail-actions').innerHTML = '';
+
+    feedback.textContent = 'Chargement de la commande...';
+    feedback.className = 'text-secondary';
+
+    // Ouvrir la modale
+    const modale = bootstrap.Modal.getOrCreateInstance(modalElement);
+
+    modale.show();
+
+    try {
+
+        // Récupérer le détail depuis PHP
+        const reponse = await fetch(
+            '/api/detail-commande-employe.php?id=' +
+            encodeURIComponent(commandeId),
+            { cache: 'no-store' }
+        );
+
+        const resultat = await reponse.json();
+
+        if (!reponse.ok || !resultat.success) {
+
+            feedback.textContent =
+                resultat.message || 'Impossible de charger la commande.';
+
+            feedback.className = 'text-danger';
+            return;
+        }
+
+        const commande = resultat.commande;
+        const historique = resultat.historique;
+
+        // NUMÉRO
+        document.getElementById('modal-commande-employe-titre')
+            .textContent = 'Commande n°' + commande.id;
+
+        // CLIENT
+        document.getElementById('employe-detail-client')
+            .textContent = commande.prenom_client + ' ' + commande.nom_client;
+
+        document.getElementById('employe-detail-email')
+            .textContent = commande.email_client;
+
+        document.getElementById('employe-detail-telephone')
+            .textContent = commande.telephone_client;
+
+        // PRESTATION
+        document.getElementById('employe-detail-menu')
+            .textContent = commande.menu_titre || 'Menu indisponible';
+
+        document.getElementById('employe-detail-date')
+            .textContent = new Date(
+                commande.date_prestation + 'T12:00:00'
+            ).toLocaleDateString('fr-FR');
+
+        document.getElementById('employe-detail-heure')
+            .textContent = commande.heure_livraison;
+
+        document.getElementById('employe-detail-convives')
+            .textContent = commande.nb_personnes + ' personnes';
+
+        document.getElementById('employe-detail-adresse')
+            .textContent = commande.adresse_livraison +
+                ', ' + commande.ville_livraison;
+
+        document.getElementById('employe-detail-statut')
+            .textContent = formaterStatutEmploye(commande.statut_courant);
+
+        // PRIX
+        document.getElementById('employe-detail-prix-menu')
+            .textContent = formaterPrixEmploye(commande.prix_menu);
+
+        document.getElementById('employe-detail-remise')
+            .textContent = '- ' + formaterPrixEmploye(commande.remise);
+
+        document.getElementById('employe-detail-livraison')
+            .textContent = formaterPrixEmploye(commande.frais_livraison);
+
+        document.getElementById('employe-detail-total')
+            .textContent = formaterPrixEmploye(commande.total);
+
+        // HISTORIQUE
+        for (const etape of historique) {
+
+            const ligne = document.createElement('li');
+            ligne.className = 'list-group-item py-3';
+
+            const statut = document.createElement('strong');
+
+            statut.textContent = formaterStatutEmploye(etape.statut);
+
+            const date = document.createElement('div');
+            date.className = 'text-secondary small';
+
+            date.textContent = new Date(
+                etape.date_modification.replace(' ', 'T')
+            ).toLocaleString('fr-FR');
+
+            ligne.appendChild(statut);
+            ligne.appendChild(date);
+
+            // Afficher l'auteur lorsqu'il est renseigné
+            if (etape.prenom && etape.nom) {
+
+                const auteur = document.createElement('div');
+                auteur.className = 'text-secondary small';
+
+                auteur.textContent =
+                    'Par ' + etape.prenom + ' ' + etape.nom;
+
+                ligne.appendChild(auteur);
+            }
+
+            historiqueListe.appendChild(ligne);
+        }
+
+        if (historique.length === 0) {
+
+            const message = document.createElement('li');
+            message.className = 'list-group-item text-secondary';
+
+            message.textContent = 'Aucun historique disponible.';
+
+            historiqueListe.appendChild(message);
+        }
+
+        // Afficher le contenu
+        feedback.textContent = '';
+        contenu.classList.remove('d-none');
+
+    } catch (erreur) {
+
+        feedback.textContent = 'Impossible de charger la commande.';
+        feedback.className = 'text-danger';
+
+        console.error(erreur);
+    }
+
+});
+
+
+// Chargement initial
+document.addEventListener('DOMContentLoaded', chargerCommandesEmploye);
+
+// Chargement des pages avec notre routeur
+document.addEventListener('pageChargee', chargerCommandesEmploye);
+
+
+/* ÉCOUTEURS DES FILTRES */
+
+// Filtrer lors d'un changement de statut
+document.addEventListener('change', function(event) {
+
+    if (event.target.id === 'employe-filtre-statut') {
+        filtrerCommandesEmploye();
+    }
+
+});
+
+// Filtrer pendant la recherche
+document.addEventListener('input', function(event) {
+
+    if (event.target.id === 'employe-recherche-commande') {
+        filtrerCommandesEmploye();
+    }
+
+});
+
