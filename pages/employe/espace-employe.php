@@ -380,6 +380,96 @@
 
                 </div>
 
+                <!-- CONTACT PRÉALABLE AVEC LE CLIENT -->
+
+                <form id="form-contact-commande" class="d-none">
+                    <input type="hidden" name="csrf_token" id="contact-commande-csrf">
+
+                    <input type="hidden" name="commande_id" id="contact-commande-id">
+
+                    <input type="hidden" name="action" id="contact-commande-action">
+
+                    <h3 class="h5 mb-3" id="contact-commande-titre">
+                        Contact avec le client
+                    </h3>
+
+                    <p class="contact-form-note mb-4">
+                        Avant toute modification ou annulation, vous devez avoir contacté le client.</p>
+
+                    <!-- MODE DE CONTACT -->
+
+                    <div class="mb-4">
+
+                        <label for="contact-commande-canal" class="form-label">
+                            Mode de contact *
+                        </label>
+
+                        <select
+                            id="contact-commande-canal"
+                            name="canal"
+                            class="form-select"
+                            required
+                        >
+                            <option value="">Choisissez un mode de contact</option>
+                            <option value="telephone">Téléphone</option>
+                            <option value="email">E-mail</option>
+                        </select>
+
+                    </div>
+
+                    <!-- MOTIF -->
+
+                    <div class="mb-4">
+
+                        <label for="contact-commande-motif" class="form-label">
+                            Motif *
+                        </label>
+
+                        <textarea
+                            id="contact-commande-motif"
+                            name="motif"
+                            class="form-control"
+                            rows="4"
+                            required
+                        ></textarea>
+
+                    </div>
+
+                    <!-- MESSAGE -->
+
+                    <div
+                        id="contact-commande-feedback"
+                        class="mt-3"
+                        role="status"
+                        aria-live="polite"
+                    ></div>
+
+                    <!-- BOUTONS -->
+
+                    <div class="d-flex flex-wrap gap-2 mt-4">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            id="contact-commande-retour"
+                        >
+                            Retour au détail
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            id="contact-commande-continuer"
+                            disabled
+                        >
+                            Continuer
+                        </button>
+
+                    </div>
+
+                </form>
+
+
             </div>
 
             <!-- ACTIONS -->

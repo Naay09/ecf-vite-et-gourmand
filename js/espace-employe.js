@@ -345,7 +345,15 @@ document.addEventListener('click', async function(event) {
     document.getElementById('employe-statut-section')
         .classList.add('d-none');
 
-    document.getElementById('employe-detail-actions').innerHTML = '';
+    // Masquer l'ancien formulaire de contact
+    document.getElementById('form-contact-commande')
+        .classList.add('d-none');
+
+    // Réafficher l'emplacement des actions
+    const zoneActions = document.getElementById('employe-detail-actions');
+
+    zoneActions.classList.remove('d-none');
+    zoneActions.innerHTML = '';
 
     feedback.textContent = 'Chargement de la commande...';
     feedback.className = 'text-secondary';
@@ -383,6 +391,59 @@ document.addEventListener('click', async function(event) {
 
         boutonStatut.dataset.commandeId = commande.id;
         boutonStatut.dataset.csrfToken = resultat.csrf_token;
+
+        // Mémoriser le jeton CSRF pour le formulaire de contact
+        const formulaireContact = document.getElementById('form-contact-commande');
+
+        formulaireContact.dataset.csrfToken = resultat.csrf_token;
+
+        /* ACTIONS SUR UNE COMMANDE */
+
+        // Récupérer l'emplacement des boutons
+        const actions = document.getElementById('employe-detail-actions');
+
+        // Récupérer le statut actuel
+        const statutCommande = normaliserTexteEmploye(
+            commande.statut_courant
+        );
+
+        // Vérifier si la commande est encore modifiable
+        if (
+            statutCommande !== 'terminee' &&
+            statutCommande !== 'annule' &&
+            statutCommande !== 'annulee'
+        ) {
+
+            // BOUTON MODIFIER
+            const boutonModifier = document.createElement('button');
+
+            boutonModifier.type = 'button';
+            boutonModifier.className = 'btn btn-primary';
+            boutonModifier.textContent = 'Modifier';
+
+            boutonModifier.addEventListener('click', function() {
+
+                ouvrirContactCommande(commande.id, 'modification');
+
+            });
+
+            // BOUTON ANNULER
+            const boutonAnnuler = document.createElement('button');
+
+            boutonAnnuler.type = 'button';
+            boutonAnnuler.className = 'btn btn-outline-danger';
+            boutonAnnuler.textContent = 'Annuler';
+
+            boutonAnnuler.addEventListener('click', function() {
+
+                ouvrirContactCommande(commande.id, 'annulation');
+
+            });
+
+            // Ajouter les boutons dans la modale
+            actions.appendChild(boutonModifier);
+            actions.appendChild(boutonAnnuler);
+        }
 
         // PRÉPARER LE CHANGEMENT DE STATUT
 
@@ -580,7 +641,6 @@ document.addEventListener('click', async function(event) {
 
 });
 
-
 // Chargement initial
 document.addEventListener('DOMContentLoaded', chargerCommandesEmploye);
 
@@ -710,6 +770,215 @@ document.addEventListener('click', async function(event) {
         feedback.className = 'mt-3 text-danger';
 
         bouton.disabled = false;
+    }
+
+});
+
+/* OUVRIR LE FORMULAIRE DE CONTACT */
+
+function ouvrirContactCommande(commandeId, action) {
+
+    const formulaire = document.getElementById(
+        'form-contact-commande'
+    );
+
+    // Réinitialiser le formulaire
+    formulaire.reset();
+
+    // Réinitialiser l'état du formulaire
+    formulaire.dataset.envoiEnCours = 'non';
+    formulaire.dataset.contactEnregistre = 'non';
+    delete formulaire.dataset.contactId;
+
+    // Ajouter le jeton CSRF
+    formulaire.elements['csrf_token'].value =
+        formulaire.dataset.csrfToken || '';
+
+    // Désactiver le bouton Continuer
+    document.getElementById('contact-commande-continuer').disabled = true;
+
+    // Enregistrer les informations de la commande
+    formulaire.elements['commande_id'].value = commandeId;
+    formulaire.elements['action'].value = action;
+
+    // Adapter le titre selon l'action
+    const titre = document.getElementById('contact-commande-titre');
+
+    if (action === 'annulation') {
+
+        titre.textContent = 'Annuler la commande n°' + commandeId;
+
+    } else {
+
+        titre.textContent = 'Modifier la commande n°' + commandeId;
+    }
+
+    // Masquer le détail
+    document.getElementById('employe-detail-contenu')
+        .classList.add('d-none');
+
+    // Masquer les actions
+    document.getElementById('employe-detail-actions')
+        .classList.add('d-none');
+
+    // Afficher le formulaire
+    formulaire.classList.remove('d-none');
+
+    // Réinitialiser le message
+    document.getElementById('contact-commande-feedback')
+        .textContent = '';
+}
+
+
+/* RETOUR AU DÉTAIL DE LA COMMANDE */
+
+document.addEventListener('click', function(event) {
+
+    if (event.target.id !== 'contact-commande-retour') {
+        return;
+    }
+
+    // Masquer le formulaire
+    document.getElementById('form-contact-commande')
+        .classList.add('d-none');
+
+    // Réafficher le détail
+    document.getElementById('employe-detail-contenu')
+        .classList.remove('d-none');
+
+    // Réafficher les actions
+    document.getElementById('employe-detail-actions')
+        .classList.remove('d-none');
+
+});
+
+
+/* VÉRIFIER LE FORMULAIRE DE CONTACT */
+
+function verifierFormulaireContact() {
+
+    const formulaire = document.getElementById('form-contact-commande');
+
+    if (!formulaire) {
+        return;
+    }
+
+    const bouton = document.getElementById('contact-commande-continuer');
+
+    // Vérifier les champs obligatoires
+    const champsValides = formulaire.checkValidity();
+
+    // Vérifier le jeton CSRF
+    const csrfPresent =
+        formulaire.elements['csrf_token'].value !== '';
+
+    // Vérifier si un envoi est en cours ou déjà terminé
+    const envoiEnCours = formulaire.dataset.envoiEnCours === 'oui';
+    const contactEnregistre = formulaire.dataset.contactEnregistre === 'oui';
+
+    bouton.disabled =
+        !champsValides ||
+        !csrfPresent ||
+        envoiEnCours ||
+        contactEnregistre;
+}
+
+// Vérifier pendant la saisie
+document.addEventListener('input', function(event) {
+
+    if (event.target.closest('#form-contact-commande')) {
+        verifierFormulaireContact();
+    }
+
+});
+
+// Vérifier lorsque le mode de contact change
+document.addEventListener('change', function(event) {
+
+    if (event.target.closest('#form-contact-commande')) {
+        verifierFormulaireContact();
+    }
+
+});
+
+/* ENREGISTRER LE CONTACT AVEC LE CLIENT */
+
+document.addEventListener('submit', async function(event) {
+
+    // Vérifier le formulaire concerné
+    if (event.target.id !== 'form-contact-commande') {
+        return;
+    }
+
+    event.preventDefault();
+
+    const formulaire = event.target;
+    const bouton = document.getElementById('contact-commande-continuer');
+    const feedback = document.getElementById('contact-commande-feedback');
+
+    // Éviter plusieurs envois
+    if (
+        formulaire.dataset.envoiEnCours === 'oui' ||
+        formulaire.dataset.contactEnregistre === 'oui'
+    ) {
+        return;
+    }
+
+    // Vérifier les champs
+    if (!formulaire.reportValidity()) {
+        return;
+    }
+
+    // Préparer les données
+    const donnees = new FormData(formulaire);
+
+    formulaire.dataset.envoiEnCours = 'oui';
+    bouton.disabled = true;
+
+    feedback.textContent = 'Enregistrement du contact...';
+    feedback.className = 'mt-3 text-secondary';
+
+    try {
+
+        // Envoyer les données à PHP
+        const reponse = await fetch('/api/contact-commande-employe.php', {
+            method: 'POST',
+            body: donnees
+        });
+
+        const resultat = await reponse.json();
+
+        if (!reponse.ok || !resultat.success) {
+
+            feedback.textContent =
+                resultat.message || 'Impossible d’enregistrer le contact.';
+
+            feedback.className = 'mt-3 text-danger';
+            return;
+        }
+
+        // Mémoriser le contact enregistré
+        formulaire.dataset.contactId = resultat.contact_id;
+        formulaire.dataset.contactEnregistre = 'oui';
+
+        // Afficher la confirmation
+        feedback.textContent = 'Le contact avec le client a bien été enregistré.';
+        feedback.className = 'mt-3 text-success';
+
+    } catch (erreur) {
+
+        feedback.textContent =
+            'Impossible de vérifier l’enregistrement du contact.';
+
+        feedback.className = 'mt-3 text-danger';
+
+        console.error(erreur);
+
+    } finally {
+
+        formulaire.dataset.envoiEnCours = 'non';
+        verifierFormulaireContact();
+
     }
 
 });
