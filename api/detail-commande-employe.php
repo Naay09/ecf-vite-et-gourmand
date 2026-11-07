@@ -103,6 +103,7 @@ try {
             cc.canal,
             cc.action,
             cc.motif,
+            cc.utilise_le,
             c.prenom AS employe_prenom,
             c.nom AS employe_nom
         FROM contact_commande cc
@@ -119,12 +120,50 @@ try {
     // Récupérer tous les contacts
     $contacts = $requeteContacts->fetchAll(PDO::FETCH_ASSOC);
 
+    /* CONTACTS PRÉALABLES ENCORE UTILISABLES */
+
+    // Préparer les identifiants
+    $contactsUtilisables = [
+        'modification' => null,
+        'annulation' => null
+    ];
+
+    // Récupérer les contacts non utilisés de l'employé connecté
+    $requeteDisponibles = $dbConnection->prepare(
+        "SELECT id, action
+        FROM contact_commande
+        WHERE commande_id = :commande_id
+        AND compte_id = :compte_id
+        AND utilise_le IS NULL
+        AND action IN ('modification', 'annulation')
+        ORDER BY id DESC"
+    );
+
+    $requeteDisponibles->execute([
+        'commande_id' => $commande['id'],
+        'compte_id' => $_SESSION['compte_id']
+    ]);
+
+    $contactsDisponibles = $requeteDisponibles->fetchAll(PDO::FETCH_ASSOC);
+
+    // Conserver le contact non utilisé le plus récent par action
+    foreach ($contactsDisponibles as $contact) {
+
+        $action = $contact['action'];
+
+        if ($contactsUtilisables[$action] === null) {
+
+            $contactsUtilisables[$action] = $contact['id'];
+        }
+    }
+
     // Envoyer les informations
     echo json_encode([
         'success' => true,
         'commande' => $commande,
         'historique' => $historique,
         'contacts' => $contacts,
+        'contacts_utilisables' => $contactsUtilisables,
         'csrf_token' => $_SESSION['csrf_employe']
     ]);
 

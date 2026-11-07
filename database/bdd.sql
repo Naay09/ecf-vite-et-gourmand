@@ -186,13 +186,13 @@ CREATE TABLE commande (
     total DECIMAL(10,2) NOT NULL,
     statut_courant ENUM(
         'en_attente',
-        'accepté',
+        'accepte',
         'en_preparation',
         'en_cours_de_livraison',
-        'livré',
+        'livre',
         'en_attente_retour_materiel',
-        'terminée',
-        'annulée'
+        'terminee',
+        'annulee'
     ) NOT NULL DEFAULT 'en_attente',
 
     CHECK (nb_personnes > 0),
@@ -246,6 +246,7 @@ CREATE TABLE contact_commande (
     canal ENUM('telephone', 'email') NOT NULL,
     motif TEXT NOT NULL,
     action ENUM('modification', 'annulation') NOT NULL,
+    utilise_le DATETIME NULL DEFAULT NULL, 
 
     FOREIGN KEY (commande_id) REFERENCES commande(id),
     FOREIGN KEY (compte_id) REFERENCES compte(id)

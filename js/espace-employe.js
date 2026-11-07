@@ -1,5 +1,9 @@
 /* AFFICHER LES COMMANDES DANS L'ESPACE EMPLOYÉ */
 
+// Contacts enregistrés pour des modifications/ une annulation en attente
+const contactsModification = {};
+const contactsAnnulation = {};
+
 async function chargerCommandesEmploye() {
 
     const liste = document.getElementById('employe-commandes-liste');
@@ -199,7 +203,6 @@ async function chargerCommandesEmploye() {
     }
 }
 
-
 /* NORMALISER LE TEXTE POUR LA RECHERCHE */
 
 function normaliserTexteEmploye(texte) {
@@ -349,6 +352,14 @@ document.addEventListener('click', async function(event) {
     document.getElementById('form-contact-commande')
         .classList.add('d-none');
 
+    // Masquer l'ancien formulaire de modification
+    document.getElementById('form-modification-commande-employe')
+        .classList.add('d-none');
+
+    // Masquer l'ancienne confirmation d'annulation
+    document.getElementById('employe-confirmation-annulation')
+        .classList.add('d-none');
+
     // Réafficher l'emplacement des actions
     const zoneActions = document.getElementById('employe-detail-actions');
 
@@ -397,27 +408,64 @@ document.addEventListener('click', async function(event) {
 
         formulaireContact.dataset.csrfToken = resultat.csrf_token;
 
+        /* RESTAURER LES CONTACTS ENREGISTRÉS */
+
+        // Récupérer les contacts non utilisés depuis MySQL
+        const contactsUtilisables = resultat.contacts_utilisables;
+
+        // Contact pour une modification
+        if (contactsUtilisables.modification) {
+
+            contactsModification[commande.id] =
+                contactsUtilisables.modification;
+
+        } else {
+
+            delete contactsModification[commande.id];
+        }
+
+        // Contact pour une annulation
+        if (contactsUtilisables.annulation) {
+
+            contactsAnnulation[commande.id] =
+                contactsUtilisables.annulation;
+
+        } else {
+
+            delete contactsAnnulation[commande.id];
+        }
+
         // Afficher l'historique des contacts
         afficherHistoriqueContacts(resultat.contacts);
 
-        /* ACTIONS SUR UNE COMMANDE */
-
-        // Récupérer l'emplacement des boutons
-        const actions = document.getElementById('employe-detail-actions');
-
-        // Récupérer le statut actuel
-        const statutCommande = normaliserTexteEmploye(
-            commande.statut_courant
+        // Préparer le formulaire de modification
+        remplirFormulaireModificationEmploye(
+            commande,
+            resultat.csrf_token
         );
 
-        // Vérifier si la commande est encore modifiable
-        if (
-            statutCommande !== 'terminee' &&
-            statutCommande !== 'annule' &&
-            statutCommande !== 'annulee'
-        ) {
+        // Masquer le formulaire de modification
+        document.getElementById('form-modification-commande-employe')
+            .classList.add('d-none');
 
-            // BOUTON MODIFIER
+        /* ACTIONS SUR UNE COMMANDE */
+
+        const actions = document.getElementById('employe-detail-actions');
+
+        const statutCommande = commande.statut_courant;
+
+        // Statuts autorisant une modification ou une annulation
+        const statutsAutorises = [
+            'en_attente',
+            'accepte',
+            'en_preparation',
+            'en_cours_de_livraison'
+        ];
+
+        // Afficher les boutons uniquement si le statut le permet
+        if (statutsAutorises.includes(statutCommande)) {
+
+            // Bouton Modifier
             const boutonModifier = document.createElement('button');
 
             boutonModifier.type = 'button';
@@ -430,7 +478,7 @@ document.addEventListener('click', async function(event) {
 
             });
 
-            // BOUTON ANNULER
+            // Bouton Annuler
             const boutonAnnuler = document.createElement('button');
 
             boutonAnnuler.type = 'button';
@@ -443,10 +491,11 @@ document.addEventListener('click', async function(event) {
 
             });
 
-            // Ajouter les boutons dans la modale
+            // Ajouter les boutons
             actions.appendChild(boutonModifier);
             actions.appendChild(boutonAnnuler);
         }
+
 
         // PRÉPARER LE CHANGEMENT DE STATUT
 
@@ -477,7 +526,7 @@ document.addEventListener('click', async function(event) {
         const statutActuel = normaliserTexteEmploye(
             commande.statut_courant
         );
-
+        
         // Définir les transitions possibles
         const transitions = {
 
@@ -644,11 +693,13 @@ document.addEventListener('click', async function(event) {
 
 });
 
+
 // Chargement initial
 document.addEventListener('DOMContentLoaded', chargerCommandesEmploye);
 
 // Chargement des pages avec notre routeur
 document.addEventListener('pageChargee', chargerCommandesEmploye);
+
 
 /* ÉCOUTEURS DES FILTRES */
 
@@ -728,7 +779,7 @@ document.addEventListener('click', async function(event) {
             body: donnees
         });
 
-        const resultat = await reponse.json();
+       const resultat = await reponse.json();
 
         if (!reponse.ok || !resultat.success) {
 
@@ -781,6 +832,54 @@ document.addEventListener('click', async function(event) {
 
 function ouvrirContactCommande(commandeId, action) {
 
+// Vérifier si un contact a déjà été enregistré
+if (
+    action === 'modification' &&
+    contactsModification[commandeId]
+) {
+
+    const formulaireModification = document.getElementById(
+        'form-modification-commande-employe'
+    );
+
+    // Réutiliser le contact existant
+    formulaireModification.elements['contact_id'].value =
+        contactsModification[commandeId];
+
+    // Masquer le détail et le formulaire de contact
+    document.getElementById('employe-detail-contenu')
+        .classList.add('d-none');
+
+    document.getElementById('employe-detail-actions')
+        .classList.add('d-none');
+
+    document.getElementById('form-contact-commande')
+        .classList.add('d-none');
+
+    // Afficher directement le formulaire de modification
+    formulaireModification.classList.remove('d-none');
+
+    verifierFormulaireModificationEmploye();
+
+    return;
+}
+
+
+// Vérifier si un contact d'annulation existe déjà
+if (
+    action === 'annulation' &&
+    contactsAnnulation[commandeId]
+) {
+
+    ouvrirConfirmationAnnulation(
+        commandeId,
+        contactsAnnulation[commandeId],
+        formulaire.dataset.csrfToken
+    );
+
+    return;
+}
+
     const formulaire = document.getElementById(
         'form-contact-commande'
     );
@@ -831,7 +930,6 @@ function ouvrirContactCommande(commandeId, action) {
     document.getElementById('contact-commande-feedback')
         .textContent = '';
 }
-
 
 /* RETOUR AU DÉTAIL DE LA COMMANDE */
 
@@ -964,6 +1062,53 @@ document.addEventListener('submit', async function(event) {
         formulaire.dataset.contactId = resultat.contact_id;
         formulaire.dataset.contactEnregistre = 'oui';
 
+        // Conserver le contact pour une modification ultérieure
+        if (formulaire.elements['action'].value === 'modification') {
+
+            const commandeId = formulaire.elements['commande_id'].value;
+
+            contactsModification[commandeId] = resultat.contact_id;
+        }
+
+        // Récupérer l'action choisie
+        const action = formulaire.elements['action'].value;
+
+        // Si l'employé souhaite modifier la commande
+        if (action === 'modification') {
+
+            const formulaireModification = document.getElementById(
+                'form-modification-commande-employe'
+            );
+
+            // Transmettre l'identifiant du contact enregistré
+            formulaireModification.elements['contact_id'].value =
+                resultat.contact_id;
+
+            // Masquer le formulaire de contact
+            formulaire.classList.add('d-none');
+
+            // Afficher le formulaire de modification
+            formulaireModification.classList.remove('d-none');
+        }
+
+        // Si l'employé souhaite annuler la commande
+        if (action === 'annulation') {
+
+            const commandeId = formulaire.elements['commande_id'].value;
+
+            const csrfToken = formulaire.elements['csrf_token'].value;
+
+            // Conserver le contact enregistré
+            contactsAnnulation[commandeId] = resultat.contact_id;
+
+            // Afficher la confirmation
+            ouvrirConfirmationAnnulation(
+                commandeId,
+                resultat.contact_id,
+                csrfToken
+            );
+        }
+
         // Actualiser l'historique des contacts
         try {
 
@@ -1092,14 +1237,517 @@ function afficherHistoriqueContacts(contacts) {
 
         date.textContent = dateContact.toLocaleString('fr-FR');
 
+        // État du contact préalable
+        const etatContact = document.createElement('span');
+
+        etatContact.className = 'badge mt-2';
+
+        if (contact.utilise_le) {
+
+            etatContact.classList.add('text-bg-success');
+            etatContact.textContent = 'Action effectuée';
+
+        } else {
+
+            etatContact.classList.add('text-bg-secondary');
+            etatContact.textContent = 'Action en attente';
+        }
+
         // Ajouter les éléments à la carte
         carte.appendChild(action);
         carte.appendChild(canal);
         carte.appendChild(motif);
         carte.appendChild(employe);
         carte.appendChild(date);
-
+        carte.appendChild(etatContact);
+        
         // Ajouter la carte à la liste
         liste.appendChild(carte);
     }
 }
+
+/* PRÉREMPLIR LE FORMULAIRE DE MODIFICATION */
+
+function remplirFormulaireModificationEmploye(commande, csrfToken) {
+
+    const formulaire = document.getElementById(
+        'form-modification-commande-employe'
+    );
+
+    // Informations techniques
+    formulaire.elements['commande_id'].value = commande.id;
+    formulaire.elements['csrf_token'].value = csrfToken;
+
+    formulaire.elements['contact_id'].value = '';
+
+    // Informations du client
+    formulaire.elements['prenom_client'].value = commande.prenom_client;
+    formulaire.elements['nom_client'].value = commande.nom_client;
+    formulaire.elements['email_client'].value = commande.email_client;
+    formulaire.elements['telephone_client'].value = commande.telephone_client;
+
+    // Informations de la prestation
+    formulaire.elements['date_prestation'].value =
+        commande.date_prestation.substring(0, 10);
+
+    formulaire.elements['heure_livraison'].value =
+        commande.heure_livraison.substring(0, 5);
+
+    formulaire.elements['nb_personnes'].value = commande.nb_personnes;
+
+    // Informations de livraison
+    formulaire.elements['adresse_livraison'].value =
+        commande.adresse_livraison;
+
+    formulaire.elements['ville_livraison'].value =
+        commande.ville_livraison;
+
+    formulaire.elements['distance_livraison_km'].value =
+        commande.distance_livraison_km;
+
+}
+
+/* RETOUR AU DÉTAIL DEPUIS LA MODIFICATION */
+
+document.addEventListener('click', function(event) {
+
+    if (event.target.id !== 'modif-commande-retour') {
+        return;
+    }
+
+    // Masquer le formulaire de modification
+    document.getElementById('form-modification-commande-employe')
+        .classList.add('d-none');
+
+    // Réafficher le détail
+    document.getElementById('employe-detail-contenu')
+        .classList.remove('d-none');
+
+    // Réafficher les actions
+    document.getElementById('employe-detail-actions')
+        .classList.remove('d-none');
+
+});
+
+
+/* VÉRIFIER LE FORMULAIRE DE MODIFICATION */
+
+function verifierFormulaireModificationEmploye() {
+
+    const formulaire = document.getElementById(
+        'form-modification-commande-employe'
+    );
+
+    if (!formulaire) {
+        return;
+    }
+
+    const bouton = document.getElementById(
+        'modif-commande-enregistrer'
+    );
+
+    // Vérifier les champs obligatoires
+    const champsValides = formulaire.checkValidity();
+
+    // Vérifier le contact préalable
+    const contactPresent =
+        formulaire.elements['contact_id'].value !== '';
+
+    // Vérifier le jeton de sécurité
+    const csrfPresent =
+        formulaire.elements['csrf_token'].value !== '';
+
+    // Vérifier qu'aucun envoi n'est en cours
+    const envoiEnCours =
+        formulaire.dataset.envoiEnCours === 'oui';
+
+    // Activer ou désactiver le bouton
+    bouton.disabled =
+        !champsValides ||
+        !contactPresent ||
+        !csrfPresent ||
+        envoiEnCours;
+}
+
+/* SURVEILLER LES CHAMPS DU FORMULAIRE */
+
+document.addEventListener('input', function(event) {
+
+    if (event.target.closest('#form-modification-commande-employe')) {
+        verifierFormulaireModificationEmploye();
+    }
+
+});
+
+document.addEventListener('change', function(event) {
+
+    if (event.target.closest('#form-modification-commande-employe')) {
+        verifierFormulaireModificationEmploye();
+    }
+
+});
+
+
+/* ENREGISTRER LES MODIFICATIONS D'UNE COMMANDE */
+
+document.addEventListener('submit', async function(event) {
+
+    // Vérifier le formulaire concerné
+    if (event.target.id !== 'form-modification-commande-employe') {
+        return;
+    }
+
+    // Empêcher le rechargement de la page
+    event.preventDefault();
+
+    // Récupérer les éléments
+    const formulaire = event.target;
+
+    const bouton = document.getElementById(
+        'modif-commande-enregistrer'
+    );
+
+    const feedback = document.getElementById(
+        'modif-commande-feedback'
+    );
+
+    // Éviter les doubles envois
+    if (formulaire.dataset.envoiEnCours === 'oui') {
+        return;
+    }
+
+    // Vérifier les champs
+    if (!formulaire.reportValidity()) {
+        return;
+    }
+
+    const commandeId = formulaire.elements['commande_id'].value;
+    const contactId = formulaire.elements['contact_id'].value;
+    const csrfToken = formulaire.elements['csrf_token'].value;
+
+    if (!commandeId || !contactId || !csrfToken) {
+
+        feedback.textContent =
+            'Le contact préalable ou les informations de sécurité sont manquants.';
+
+        feedback.className = 'mt-3 text-danger';
+
+        return;
+    }
+
+    // Récupérer les informations du formulaire
+    const donnees = new FormData(formulaire);
+
+    // Désactiver le bouton pendant l'enregistrement
+    formulaire.dataset.envoiEnCours = 'oui';
+    bouton.disabled = true;
+
+    feedback.textContent = 'Enregistrement des modifications...';
+    feedback.className = 'mt-3 text-secondary';
+
+    try {
+
+        // Envoyer les données à PHP
+        const reponse = await fetch('/api/modifier-commande-employe.php', {
+            method: 'POST',
+            body: donnees
+        });
+
+        const resultat = await reponse.json();
+
+        // Vérifier la réponse
+        if (!reponse.ok || !resultat.success) {
+
+            feedback.textContent =
+                resultat.message || 'Impossible de modifier la commande.';
+
+            feedback.className = 'mt-3 text-danger';
+
+            return;
+        }
+
+        // La modification est enregistrée
+        feedback.textContent = resultat.message;
+        feedback.className = 'mt-3 text-success';
+
+        // Le contact ne peut plus être réutilisé
+        delete contactsModification[commandeId];
+
+        formulaire.elements['contact_id'].value = '';
+
+        // Actualiser les commandes
+        await chargerCommandesEmploye();
+
+        // Retrouver la commande modifiée
+        const boutonsDetail = document.querySelectorAll(
+            '.btn-detail-employe'
+        );
+
+        let boutonCommande = null;
+
+        for (const boutonDetail of boutonsDetail) {
+
+            if (boutonDetail.dataset.commandeId === commandeId) {
+
+                boutonCommande = boutonDetail;
+                break;
+            }
+        }
+
+        if (boutonCommande) {
+
+            // Masquer le formulaire
+            formulaire.classList.add('d-none');
+
+            // Recharger le détail de la commande
+            boutonCommande.click();
+        }
+
+    } catch (erreur) {
+
+        console.error(erreur);
+
+        feedback.textContent =
+            'Impossible de confirmer l’enregistrement. Actualisez le détail de la commande avant de réessayer.';
+
+        feedback.className = 'mt-3 text-danger';
+
+    } finally {
+
+        formulaire.dataset.envoiEnCours = 'non';
+
+        verifierFormulaireModificationEmploye();
+
+    }
+
+});
+
+
+/* AFFICHER LA CONFIRMATION D'ANNULATION */
+
+function ouvrirConfirmationAnnulation(commandeId, contactId, csrfToken) {
+
+    const confirmation = document.getElementById(
+        'employe-confirmation-annulation'
+    );
+
+    // Renseigner le numéro de commande
+    document.getElementById('annulation-commande-numero')
+        .textContent = 'n°' + commandeId;
+
+    // Conserver les informations nécessaires
+    document.getElementById('annulation-commande-id')
+        .value = commandeId;
+
+    document.getElementById('annulation-contact-id')
+        .value = contactId;
+
+    document.getElementById('annulation-csrf-token')
+        .value = csrfToken;
+
+    // Masquer les autres contenus
+    document.getElementById('employe-detail-contenu')
+        .classList.add('d-none');
+
+    document.getElementById('employe-detail-actions')
+        .classList.add('d-none');
+
+    document.getElementById('form-contact-commande')
+        .classList.add('d-none');
+
+    document.getElementById('form-modification-commande-employe')
+        .classList.add('d-none');
+
+    // Réinitialiser le message
+    document.getElementById('annulation-commande-feedback')
+        .textContent = '';
+
+    // Afficher la confirmation
+    confirmation.classList.remove('d-none');
+
+    // Réinitialiser l'état de l'envoi
+    confirmation.dataset.envoiEnCours = 'non';
+
+    // Activer le bouton si les informations sont présentes
+    const boutonConfirmer = document.getElementById(
+        'annulation-commande-confirmer'
+    );
+
+    boutonConfirmer.disabled = !commandeId || !contactId || !csrfToken;
+}
+
+
+/* RETOUR AU DÉTAIL DEPUIS L'ANNULATION */
+
+document.addEventListener('click', function(event) {
+
+    if (event.target.id !== 'annulation-commande-retour') {
+        return;
+    }
+
+    // Masquer la confirmation
+    document.getElementById('employe-confirmation-annulation')
+        .classList.add('d-none');
+
+    // Réafficher le détail
+    document.getElementById('employe-detail-contenu')
+        .classList.remove('d-none');
+
+    // Réafficher les actions
+    document.getElementById('employe-detail-actions')
+        .classList.remove('d-none');
+
+});
+
+
+/* CONFIRMER L'ANNULATION D'UNE COMMANDE */
+
+document.addEventListener('click', async function(event) {
+
+    // Vérifier qu'il s'agit du bouton d'annulation
+    if (event.target.id !== 'annulation-commande-confirmer') {
+        return;
+    }
+
+    // Récupérer les éléments
+    const bouton = event.target;
+
+    const confirmation = document.getElementById(
+        'employe-confirmation-annulation'
+    );
+
+    const feedback = document.getElementById(
+        'annulation-commande-feedback'
+    );
+
+    // Éviter les doubles envois
+    if (confirmation.dataset.envoiEnCours === 'oui') {
+        return;
+    }
+
+    // Récupérer les informations
+    const commandeId = document.getElementById(
+        'annulation-commande-id'
+    ).value;
+
+    const contactId = document.getElementById(
+        'annulation-contact-id'
+    ).value;
+
+    const csrfToken = document.getElementById(
+        'annulation-csrf-token'
+    ).value;
+
+    // Vérifier les informations
+    if (!commandeId || !contactId || !csrfToken) {
+
+        feedback.textContent =
+            'Les informations nécessaires à l’annulation sont manquantes.';
+
+        feedback.className = 'mt-3 text-danger';
+
+        return;
+    }
+
+    // Préparer les données
+    const donnees = new FormData();
+
+    donnees.append('commande_id', commandeId);
+    donnees.append('contact_id', contactId);
+    donnees.append('csrf_token', csrfToken);
+
+    // Désactiver le bouton pendant l'enregistrement
+    confirmation.dataset.envoiEnCours = 'oui';
+    bouton.disabled = true;
+
+    feedback.textContent = 'Annulation en cours...';
+    feedback.className = 'mt-3 text-secondary';
+
+    let annulationEnregistree = false;
+
+    try {
+
+        // Envoyer la demande à PHP
+        const reponse = await fetch('/api/annuler-commande-employe.php', {
+            method: 'POST',
+            body: donnees
+        });
+
+        const resultat = await reponse.json();
+
+        // Vérifier la réponse
+        if (!reponse.ok || !resultat.success) {
+
+            feedback.textContent =
+                resultat.message || 'Impossible d’annuler la commande.';
+
+            feedback.className = 'mt-3 text-danger';
+
+            return;
+        }
+
+        // L'annulation a été confirmée par PHP
+        annulationEnregistree = true;
+
+        // Supprimer le contact mémorisé
+        delete contactsAnnulation[commandeId];
+
+        // Effacer l'identifiant du contact utilisé
+        document.getElementById('annulation-contact-id').value = '';
+
+        feedback.textContent = resultat.message;
+        feedback.className = 'mt-3 text-success';
+
+        // Actualiser les cartes et les indicateurs
+        await chargerCommandesEmploye();
+
+        // Retrouver la commande annulée
+        const boutonsDetail = document.querySelectorAll(
+            '.btn-detail-employe'
+        );
+
+        for (const boutonDetail of boutonsDetail) {
+
+            if (boutonDetail.dataset.commandeId === commandeId) {
+
+                // Masquer la confirmation
+                confirmation.classList.add('d-none');
+
+                // Recharger le détail de la commande
+                boutonDetail.click();
+
+                break;
+            }
+        }
+
+    } catch (erreur) {
+
+        console.error(erreur);
+
+        if (annulationEnregistree) {
+
+            feedback.textContent =
+                'La commande est annulée, mais l’affichage n’a pas pu être actualisé.';
+
+        } else {
+
+            feedback.textContent =
+                'Impossible de confirmer le résultat. Rechargez la commande avant de réessayer.';
+
+        }
+
+        feedback.className = 'mt-3 text-danger';
+
+    } finally {
+
+        confirmation.dataset.envoiEnCours = 'non';
+
+        // Ne pas réactiver après une annulation réussie
+        if (annulationEnregistree) {
+            bouton.disabled = true;
+        }
+    }
+});
+
+
+

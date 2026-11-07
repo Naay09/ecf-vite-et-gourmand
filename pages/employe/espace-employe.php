@@ -69,7 +69,8 @@
 
         <p class="contact-form-note mb-4"> Consultez et gérez les commandes reçues par Vite & Gourmand.</p>
 
-        <!-- FILTRES DES COMMANDES -->
+        
+    <!-- FILTRES DES COMMANDES -->
 
     <div id="employe-commandes-filtres" class="mb-4">
 
@@ -126,6 +127,7 @@
         ></p>
 
     </div>
+
 
         <!-- MESSAGES -->
 
@@ -187,6 +189,7 @@
     </div>
 
 </section>
+
 
 <!-- MODALE DÉTAIL COMMANDE EMPLOYÉ -->
 
@@ -381,7 +384,7 @@
                     <!-- HISTORIQUE DES CONTACTS -->
 
                     <section id="employe-contacts-section" class="mt-4">
-                        
+
                         <hr class="my-4">
 
                         <h3 class="h5 mb-3">
@@ -402,16 +405,26 @@
                 <form id="form-contact-commande" class="d-none">
                     <input type="hidden" name="csrf_token" id="contact-commande-csrf">
 
-                    <input type="hidden" name="commande_id" id="contact-commande-id">
+                    <input
+                        type="hidden"
+                        name="commande_id"
+                        id="contact-commande-id"
+                    >
 
-                    <input type="hidden" name="action" id="contact-commande-action">
+                    <input
+                        type="hidden"
+                        name="action"
+                        id="contact-commande-action"
+                    >
 
                     <h3 class="h5 mb-3" id="contact-commande-titre">
                         Contact avec le client
                     </h3>
 
                     <p class="contact-form-note mb-4">
-                        Avant toute modification ou annulation, vous devez avoir contacté le client.</p>
+                        Avant toute modification ou annulation,
+                        vous devez avoir contacté le client.
+                    </p>
 
                     <!-- MODE DE CONTACT -->
 
@@ -486,6 +499,284 @@
 
                 </form>
 
+                <!-- FORMULAIRE DE MODIFICATION D'UNE COMMANDE -->
+
+                <form id="form-modification-commande-employe" class="d-none">
+
+                    <h3 class="h5 mb-4">
+                        Modifier la commande
+                    </h3>
+
+                    <!-- INFORMATIONS TECHNIQUES -->
+
+                    <input type="hidden" name="commande_id" id="modif-commande-id">
+
+                    <input type="hidden" name="contact_id" id="modif-contact-id">
+
+                    <input type="hidden" name="csrf_token" id="modif-csrf-token">
+
+                    <!-- INFORMATIONS DU CLIENT -->
+
+                    <h4 class="h6 mb-3">Informations du client</h4>
+
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-md-6">
+                            <label for="modif-prenom" class="form-label">
+                                Prénom *
+                            </label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="modif-prenom"
+                                name="prenom_client"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="modif-nom" class="form-label">
+                                Nom *
+                            </label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="modif-nom"
+                                name="nom_client"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="modif-email" class="form-label">
+                                E-mail *
+                            </label>
+                            <input
+                                type="email"
+                                class="form-control"
+                                id="modif-email"
+                                name="email_client"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="modif-telephone" class="form-label">
+                                Téléphone *
+                            </label>
+                            <input
+                                type="tel"
+                                class="form-control"
+                                id="modif-telephone"
+                                name="telephone_client"
+                                required
+                            >
+                        </div>
+
+                    </div>
+
+                    <!-- INFORMATIONS DE LA PRESTATION -->
+
+                    <h4 class="h6 mb-3">Informations de la prestation</h4>
+
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-md-6">
+                            <label for="modif-date" class="form-label">
+                                Date de prestation *
+                            </label>
+                            <input
+                                type="date"
+                                class="form-control"
+                                id="modif-date"
+                                name="date_prestation"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="modif-heure" class="form-label">
+                                Heure de livraison *
+                            </label>
+                            <input
+                                type="time"
+                                class="form-control"
+                                id="modif-heure"
+                                name="heure_livraison"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="modif-personnes" class="form-label">
+                                Nombre de personnes *
+                            </label>
+                            <input
+                                type="number"
+                                class="form-control"
+                                id="modif-personnes"
+                                name="nb_personnes"
+                                min="1"
+                                required
+                            >
+                        </div>
+
+                    </div>
+
+                    <!-- LIVRAISON -->
+
+                    <h4 class="h6 mb-3">Livraison</h4>
+
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-12">
+                            <label for="modif-adresse" class="form-label">
+                                Adresse de livraison *
+                            </label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="modif-adresse"
+                                name="adresse_livraison"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="modif-ville" class="form-label">
+                                Ville *
+                            </label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="modif-ville"
+                                name="ville_livraison"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="modif-distance" class="form-label">
+                                Distance de livraison (km) *
+                            </label>
+                            <input
+                                type="number"
+                                class="form-control"
+                                id="modif-distance"
+                                name="distance_livraison_km"
+                                min="0"
+                                step="0.1"
+                                required
+                            >
+                        </div>
+
+                    </div>
+
+                    <p class="small text-muted">
+                        Le menu choisi ne peut pas être modifié.
+                        Le montant de la commande sera recalculé lors
+                        de l'enregistrement.
+                    </p>
+
+                    <!-- MESSAGES -->
+
+                    <div
+                        id="modif-commande-feedback"
+                        class="mt-3"
+                        role="status"
+                        aria-live="polite"
+                    ></div>
+
+                    <!-- BOUTONS -->
+
+                    <div class="d-flex flex-wrap gap-2 mt-4">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            id="modif-commande-retour"
+                        >
+                            Retour au détail
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            id="modif-commande-enregistrer"
+                            disabled
+                        >
+                            Enregistrer les modifications
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <!-- CONFIRMATION D'ANNULATION -->
+
+                <div id="employe-confirmation-annulation" class="d-none">
+
+                    <h3 class="h5 mb-3">
+                        Confirmer l'annulation
+                    </h3>
+
+                    <div class="alert alert-warning" role="alert">
+                        Vous êtes sur le point d'annuler définitivement
+                        cette commande.
+                    </div>
+
+                    <p>
+                        Voulez-vous vraiment annuler la commande
+                        <strong id="annulation-commande-numero"></strong> ?
+                    </p>
+
+                    <p class="text-muted small">
+                        Cette action modifiera le statut de la commande,
+                        enregistrera l'annulation dans son historique
+                        et rétablira le stock du menu.
+                    </p>
+
+                    <!-- INFORMATIONS TECHNIQUES -->
+
+                    <input type="hidden" id="annulation-commande-id">
+
+                    <input type="hidden" id="annulation-contact-id">
+
+                    <input type="hidden" id="annulation-csrf-token">
+
+                    <!-- MESSAGE -->
+
+                    <div
+                        id="annulation-commande-feedback"
+                        class="mt-3"
+                        role="status"
+                        aria-live="polite"
+                    ></div>
+
+                    <!-- BOUTONS -->
+
+                    <div class="d-flex flex-wrap gap-2 mt-4">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            id="annulation-commande-retour"
+                        >
+                            Retour au détail
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            id="annulation-commande-confirmer"
+                            disabled
+                        >
+                            Confirmer l'annulation
+                        </button>
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -513,3 +804,4 @@
 
     </div>
 </div>
+

@@ -1,4 +1,3 @@
-
 <section class="contact-form-section">
 
     <div class="heading">
@@ -95,6 +94,8 @@
                             </ul>
 
                         </div>
+
+                </div>
 
                 <div class="mt-4">
                     <button

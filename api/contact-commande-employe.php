@@ -1,3 +1,4 @@
+
 <?php
 
 header('Content-Type: application/json; charset=utf-8');
@@ -148,20 +149,27 @@ try {
         exit;
     }
 
-    // Vérifier que la commande n'est pas clôturée
-    $statut = strtolower(trim($commande['statut_courant']));
+        // Vérifier que la commande peut encore être modifiée ou annulée
+        $statut = $commande['statut_courant'];
 
-    if (in_array($statut, ['terminee', 'terminée', 'annule', 'annulé', 'annulee'], true)) {
+        $statutsAutorises = [
+            'en_attente',
+            'accepte',
+            'en_preparation',
+            'en_cours_de_livraison'
+        ];
 
-        http_response_code(409);
+        if (!in_array($statut, $statutsAutorises, true)) {
 
-        echo json_encode([
-            'success' => false,
-            'message' => 'Cette commande est déjà clôturée.'
-        ]);
+            http_response_code(409);
 
-        exit;
-    }
+            echo json_encode([
+                'success' => false,
+                'message' => 'Cette commande ne peut plus être modifiée ou annulée.'
+            ]);
+
+            exit;
+        }
 
     // Enregistrer le contact dans MySQL
     $requete = $dbConnection->prepare(
