@@ -96,5 +96,5 @@ async function chargerAvisPublics() {
 // Chargement initial
 document.addEventListener('DOMContentLoaded', chargerAvisPublics);
 
-// Navigation SPA
+// Chargement des pages avec notre routeur
 document.addEventListener('pageChargee', chargerAvisPublics);

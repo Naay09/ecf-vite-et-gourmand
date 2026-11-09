@@ -15,6 +15,7 @@ export const allRoutes = [
     new Route("/reinitialiser-mot-de-passe","Réinitialiser mon mot de passe","/pages/auth/reinitialiser-mot-de-passe.php"),
     new Route("/commande","Page de commande","/pages/commandes/commande.php"),
     new Route("/espace-employe","Espace Employé","/pages/employe/espace-employe.php"),
+    new Route("/gestion-plats","Gestion des plats | Vite & Gourmand","/pages/employe/gestion-plats.php"),
     
 ];
 
