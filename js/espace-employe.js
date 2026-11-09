@@ -807,14 +807,6 @@ document.addEventListener('click', async function(event) {
 
 });
 
-
-// Chargement initial
-document.addEventListener('DOMContentLoaded', chargerCommandesEmploye);
-
-// Chargement des pages avec notre routeur
-document.addEventListener('pageChargee', chargerCommandesEmploye);
-
-
 /* ÉCOUTEURS DES FILTRES */
 
 // Filtrer lors d'un changement de statut
@@ -2058,4 +2050,300 @@ document.addEventListener('click', async function(event) {
 
 });
 
+/* CHARGER LES AVIS À MODÉRER */
 
+async function chargerAvisEmploye() {
+
+    // Récupérer les éléments de la page
+    const liste = document.getElementById('employe-avis-liste');
+    const feedback = document.getElementById('employe-avis-feedback');
+    const compteur = document.getElementById('employe-avis-attente');
+
+    // Vérifier que les éléments existent
+    if (!liste || !feedback) {
+        return;
+    }
+
+    // Réinitialiser l'affichage
+    liste.innerHTML = '';
+
+    feedback.textContent = 'Chargement des avis...';
+    feedback.className = 'mb-4 text-secondary';
+
+    if (compteur) {
+        compteur.textContent = '—';
+    }
+
+    try {
+
+        // Récupérer les avis depuis PHP
+        const reponse = await fetch('/api/avis-employe.php', {
+            cache: 'no-store'
+        });
+
+        // Lire la réponse JSON
+        const resultat = await reponse.json();
+
+        // Vérifier la réponse
+        if (!reponse.ok || !resultat.success) {
+
+            feedback.textContent =
+                resultat.message || 'Impossible de charger les avis.';
+
+            feedback.className = 'mb-4 text-danger';
+
+            return;
+        }
+
+        // Récupérer les avis
+        const avis = resultat.avis;
+
+        // Mettre à jour le compteur
+        if (compteur) {
+            compteur.textContent = avis.length;
+        }
+
+        // Vérifier si aucun avis n'est en attente
+        if (avis.length === 0) {
+
+            feedback.textContent = 'Aucun avis en attente de modération.';
+            feedback.className = 'mb-4 text-secondary';
+
+            return;
+        }
+
+        // Effacer le message de chargement
+        feedback.textContent = '';
+
+        // Créer une carte pour chaque avis
+        for (const avisClient of avis) {
+
+            // Colonne Bootstrap
+            const colonne = document.createElement('div');
+            colonne.className = 'col-12 col-md-6';
+
+            // Carte Bootstrap
+            const carte = document.createElement('article');
+            carte.className = 'card h-100';
+
+            // Contenu de la carte
+            const contenu = document.createElement('div');
+            contenu.className = 'card-body d-flex flex-column';
+
+            // Numéro de commande
+            const titre = document.createElement('h3');
+            titre.className = 'h5 mb-3';
+            titre.textContent = 'Commande n°' + avisClient.commande_id;
+
+            // Nom du client
+            const client = document.createElement('p');
+            client.className = 'mb-2';
+            client.textContent =
+                'Client : ' + avisClient.prenom_client + ' ' +
+                avisClient.nom_client;
+
+            // Menu commandé
+            const menu = document.createElement('p');
+            menu.className = 'mb-2';
+            menu.textContent = 'Menu : ' + avisClient.menu_titre;
+
+            // Note du client
+            const note = document.createElement('p');
+            note.className = 'fw-semibold mb-3';
+            note.textContent = 'Note : ' + avisClient.note + ' / 5';
+
+            // Commentaire
+            const commentaire = document.createElement('p');
+            commentaire.className = 'mb-3';
+            commentaire.textContent = avisClient.commentaire;
+
+            // Date de dépôt
+            const date = document.createElement('p');
+            date.className = 'small text-muted mb-3';
+
+            const dateAvis = new Date(
+                avisClient.date_creation.replace(' ', 'T')
+            );
+
+            date.textContent =
+                'Déposé le ' + dateAvis.toLocaleString('fr-FR');
+
+            // Statut de modération
+            const statut = document.createElement('span');
+            statut.className = 'badge text-bg-warning align-self-start mt-auto';
+            statut.textContent = 'En attente de validation';
+
+            // Boutons de modération
+            const actions = document.createElement('div');
+            actions.className = 'd-flex flex-wrap gap-2 mt-3';
+
+            // Bouton Valider
+            const boutonValider = document.createElement('button');
+
+            boutonValider.type = 'button';
+            boutonValider.className = 'btn btn-primary';
+            boutonValider.textContent = 'Valider';
+
+            boutonValider.dataset.avisId = avisClient.id;
+            boutonValider.dataset.moderation = 'valide';
+            boutonValider.dataset.csrfToken = resultat.csrf_token;
+
+            boutonValider.classList.add('btn-moderer-avis');
+
+            // Bouton Refuser
+            const boutonRefuser = document.createElement('button');
+
+            boutonRefuser.type = 'button';
+            boutonRefuser.className = 'btn btn-outline-danger';
+            boutonRefuser.textContent = 'Refuser';
+
+            boutonRefuser.dataset.avisId = avisClient.id;
+            boutonRefuser.dataset.moderation = 'refusee';
+            boutonRefuser.dataset.csrfToken = resultat.csrf_token;
+
+            boutonRefuser.classList.add('btn-moderer-avis');
+
+            // Ajouter les boutons
+            actions.appendChild(boutonValider);
+            actions.appendChild(boutonRefuser);
+
+            // Ajouter les informations au contenu
+            contenu.appendChild(titre);
+            contenu.appendChild(client);
+            contenu.appendChild(menu);
+            contenu.appendChild(note);
+            contenu.appendChild(commentaire);
+            contenu.appendChild(date);
+            contenu.appendChild(statut);
+            contenu.appendChild(actions);
+
+            // Ajouter la carte à la colonne
+            carte.appendChild(contenu);
+            colonne.appendChild(carte);
+
+            // Ajouter la colonne à la liste
+            liste.appendChild(colonne);
+        }
+
+    } catch (erreur) {
+
+        console.error(erreur);
+
+        feedback.textContent = 'Impossible de charger les avis.';
+        feedback.className = 'mb-4 text-danger';
+    }
+}
+
+/* MODÉRER UN AVIS CLIENT */
+
+document.addEventListener('click', async function(event) {
+
+    // Vérifier le bouton cliqué
+    const bouton = event.target.closest('.btn-moderer-avis');
+
+    if (!bouton || bouton.disabled) {
+        return;
+    }
+
+    // Récupérer les informations
+    const avisId = bouton.dataset.avisId;
+    const moderation = bouton.dataset.moderation;
+    const csrfToken = bouton.dataset.csrfToken;
+
+    if (!avisId || !moderation || !csrfToken) {
+        return;
+    }
+
+    // Demander une confirmation
+    const action = moderation === 'valide' ? 'valider' : 'refuser';
+
+    const confirmation = window.confirm(
+        'Voulez-vous vraiment ' + action + ' cet avis ?'
+    );
+
+    if (!confirmation) {
+        return;
+    }
+
+    // Récupérer les boutons de la carte
+    const carte = bouton.closest('.card');
+
+    const boutons = carte.querySelectorAll('.btn-moderer-avis');
+
+    // Désactiver les deux boutons
+    boutons.forEach(function(element) {
+        element.disabled = true;
+    });
+
+    // Préparer les données
+    const donnees = new FormData();
+
+    donnees.append('avis_id', avisId);
+    donnees.append('moderation', moderation);
+    donnees.append('csrf_token', csrfToken);
+
+    const feedback = document.getElementById(
+        'employe-avis-feedback'
+    );
+
+    feedback.textContent = 'Modération en cours...';
+    feedback.className = 'mb-4 text-secondary';
+
+    try {
+
+        // Envoyer la demande à PHP
+        const reponse = await fetch('/api/moderer-avis.php', {
+            method: 'POST',
+            body: donnees
+        });
+
+        const resultat = await reponse.json();
+
+        // Vérifier la réponse
+        if (!reponse.ok || !resultat.success) {
+
+            feedback.textContent =
+                resultat.message || 'Impossible de modérer cet avis.';
+
+            feedback.className = 'mb-4 text-danger';
+
+            // Réactiver les boutons
+            boutons.forEach(function(element) {
+                element.disabled = false;
+            });
+
+            return;
+        }
+
+        // Afficher la confirmation
+        feedback.textContent = resultat.message;
+        feedback.className = 'mb-4 text-success';
+
+        // Actualiser la liste et le compteur
+        await chargerAvisEmploye();
+
+        // Réafficher la confirmation après le chargement
+        feedback.textContent = resultat.message;
+        feedback.className = 'mb-4 text-success';
+
+    } catch (erreur) {
+
+        console.error(erreur);
+
+        feedback.textContent =
+            'Impossible de confirmer la modération. Actualisez la liste avant de réessayer.';
+
+        feedback.className = 'mb-4 text-danger';
+
+    }
+
+});
+
+
+// Chargement initial
+document.addEventListener('DOMContentLoaded', chargerCommandesEmploye);
+document.addEventListener('DOMContentLoaded', chargerAvisEmploye);
+
+// Chargement des pages avec notre routeur
+document.addEventListener('pageChargee', chargerCommandesEmploye);
+document.addEventListener('pageChargee', chargerAvisEmploye);

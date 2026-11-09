@@ -67,36 +67,23 @@
 </section>
 
 <section class="reviews">
+
     <div class="eyebrow">ILS EN PARLENT</div>
-    <h2> Vos avis <em>comptent.</em> </h2>
-    <div class="review-row">
-        <article>
-            <div class="stars">✦</div>
-            <p>
-                Les avis clients validés par l’équipe apparaîtront ici après les
-                premières publications.
-            </p>
-            <b>Vite & Gourmand</b>
-            <small>Avis publiés après validation</small>
-        </article>
-               <article>
-            <div class="stars">✦</div>
-            <p>
-                Les avis clients validés par l’équipe apparaîtront ici après les
-                premières publications.
-            </p>
-            <b>Vite & Gourmand</b>
-            <small>Avis publiés après validation</small>
-        </article>
-               <article>
-            <div class="stars">✦</div>
-            <p>
-                Les avis clients validés par l’équipe apparaîtront ici après les
-                premières publications.
-            </p>
-            <b>Vite & Gourmand</b>
-            <small>Avis publiés après validation</small>
-        </article>
-    </div>
+
+    <h2>Vos avis <em>comptent.</em></h2>
+
+    <!-- Message de chargement ou d'erreur -->
+    <p
+        id="avis-publics-feedback"
+        role="status"
+        aria-live="polite"
+    ></p>
+
+    <!-- Avis récupérés depuis MySQL -->
+    <div
+        id="avis-publics-liste"
+        class="review-row"
+    ></div>
+
 </section>
 

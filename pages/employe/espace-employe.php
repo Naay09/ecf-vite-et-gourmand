@@ -145,6 +145,41 @@
 
 </section>
 
+<!-- GESTION DES AVIS CLIENTS -->
+
+<section class="contact-form-section">
+
+    <div class="heading">
+
+        <div class="eyebrow">GESTION DES AVIS</div>
+
+        <h2>Les avis <em>clients.</em></h2>
+
+        <p class="contact-form-note mb-4">
+            Consultez les avis laissés par les clients et modérez-les
+            avant leur publication sur Vite & Gourmand.
+        </p>
+
+        <!-- MESSAGES -->
+
+        <div
+            id="employe-avis-feedback"
+            role="status"
+            aria-live="polite"
+        ></div>
+
+        <!-- LISTE DES AVIS -->
+
+        <div
+            id="employe-avis-liste"
+            class="row g-4"
+        ></div>
+
+    </div>
+
+</section>
+
+
 <!-- AUTRES FONCTIONNALITÉS -->
 
 <section class="contact-form-section">
@@ -155,33 +190,95 @@
 
         <h2>Gérer <em>l'établissement.</em></h2>
 
+        <p class="contact-form-note mb-4">
+            Accédez aux différentes fonctionnalités de gestion
+            de Vite & Gourmand.
+        </p>
+
         <div class="row g-4">
 
-            <div class="col-12 col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h3 class="h5">Menus et plats</h3>
-                        <p>Modifier et gérer les menus proposés.</p>
-                    </div>
-                </div>
-            </div>
+            <!-- GESTION DES PLATS -->
 
             <div class="col-12 col-md-4">
+
                 <div class="card h-100">
-                    <div class="card-body">
+
+                    <div class="card-body d-flex flex-column">
+
+                        <h3 class="h5">Plats et allergènes</h3>
+
+                        <p>
+                            Ajouter, modifier et supprimer les plats,
+                            et gérer leurs allergènes.
+                        </p>
+
+                        <a
+                            href="/gestion-plats"
+                            class="btn btn-primary mt-auto"
+                        >
+                            Gérer les plats
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- GESTION DES MENUS -->
+
+            <div class="col-12 col-md-4">
+
+                <div class="card h-100">
+
+                    <div class="card-body d-flex flex-column">
+
+                        <h3 class="h5">Menus et disponibilités</h3>
+
+                        <p>
+                            Gérer les menus, leurs images et
+                            leurs disponibilités.
+                        </p>
+
+                        <a
+                            href="/gestion-menus"
+                            class="btn btn-primary mt-auto"
+                        >
+                            Gérer les menus
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- GESTION DES HORAIRES -->
+
+            <div class="col-12 col-md-4">
+
+                <div class="card h-100">
+
+                    <div class="card-body d-flex flex-column">
+
                         <h3 class="h5">Horaires</h3>
-                        <p>Mettre à jour les horaires d'ouverture.</p>
-                    </div>
-                </div>
-            </div>
 
-            <div class="col-12 col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h3 class="h5">Avis clients</h3>
-                        <p>Valider ou refuser les avis reçus.</p>
+                        <p>
+                            Consulter et modifier les horaires
+                            d'ouverture de l'établissement.
+                        </p>
+
+                        <a
+                            href="/gestion-horaires"
+                            class="btn btn-primary mt-auto"
+                        >
+                            Gérer les horaires
+                        </a>
+
                     </div>
+
                 </div>
+
             </div>
 
         </div>
@@ -189,7 +286,6 @@
     </div>
 
 </section>
-
 
 <!-- MODALE DÉTAIL COMMANDE EMPLOYÉ -->
 
