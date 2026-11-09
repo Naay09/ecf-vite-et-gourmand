@@ -362,6 +362,28 @@
                                 Choisissez la prochaine étape
                             </option>
                         </select>
+                        
+                         <!-- MATÉRIEL PRÊTÉ -->
+
+                        <div id="employe-materiel-champs" class="mt-3 d-none">
+
+                            <label for="employe-description-materiel" class="form-label">
+                                Description du matériel prêté *
+                            </label>
+
+                            <textarea
+                                id="employe-description-materiel"
+                                class="form-control"
+                                rows="4"
+                                maxlength="1000"
+                                placeholder="Ex. : 2 chafing dishes, 4 plateaux de service..."
+                            ></textarea>
+
+                            <p class="small text-muted mt-2 mb-0">
+                                Le client disposera de 10 jours pour restituer le matériel.
+                            </p>
+
+                        </div>
 
                         <button
                             type="button"
@@ -395,6 +417,76 @@
                             id="employe-contacts-liste"
                             class="d-flex flex-column gap-3"
                         ></div>
+
+                    </section>
+
+                    <!-- RESTITUTION DU MATÉRIEL -->
+
+                    <section id="employe-pret-section" class="mt-4 d-none">
+
+                        <hr class="my-4">
+
+                        <h3 class="h5 mb-3">
+                            Restitution du matériel
+                        </h3>
+
+                        <div class="border rounded p-3">
+
+                            <p class="mb-2">
+                                <strong>Matériel prêté :</strong>
+                            </p>
+
+                            <p
+                                id="employe-pret-description"
+                                class="mb-3"
+                            ></p>
+
+                            <p class="mb-2">
+                                <strong>Date du prêt :</strong>
+                                <span id="employe-pret-date"></span>
+                            </p>
+
+                            <p class="mb-3">
+                                <strong>Date limite de restitution :</strong>
+                                <span id="employe-pret-date-limite"></span>
+                            </p>
+
+                            <p class="mb-3">
+                                <strong>État :</strong>
+
+                                <span
+                                    id="employe-pret-etat"
+                                    class="badge text-bg-warning"
+                                >
+                                    En attente de restitution
+                                </span>
+                            </p>
+
+                            <p id="employe-pret-retour-ligne" class="mb-3 d-none">
+
+                                <strong>Date de restitution :</strong>
+
+                                <span id="employe-pret-date-retour"></span>
+
+                            </p>
+
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                id="employe-confirmer-restitution"
+                                disabled
+                            >
+                                Confirmer la restitution
+                            </button>
+
+                            <div
+                                id="employe-restitution-feedback"
+                                class="mt-3"
+                                role="status"
+                                aria-live="polite"
+                            ></div>
+
+                        </div>
 
                     </section>
 

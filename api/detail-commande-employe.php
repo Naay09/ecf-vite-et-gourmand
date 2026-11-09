@@ -157,6 +157,32 @@ try {
         }
     }
 
+    /* RÉCUPÉRER LE MATÉRIEL PRÊTÉ */
+
+    // Préparer la requête
+    $requetePret = $dbConnection->prepare(
+        "SELECT
+            description,
+            date_pret,
+            date_limite_retour,
+            date_retour
+        FROM pret_materiel
+        WHERE commande_id = :commande_id"
+    );
+
+    // Exécuter la requête
+    $requetePret->execute([
+        'commande_id' => $commande['id']
+    ]);
+
+    // Récupérer le prêt
+    $pretMateriel = $requetePret->fetch(PDO::FETCH_ASSOC);
+
+    // Si aucun prêt n'existe
+    if (!$pretMateriel) {
+        $pretMateriel = null;
+    }
+
     // Envoyer les informations
     echo json_encode([
         'success' => true,
@@ -164,6 +190,7 @@ try {
         'historique' => $historique,
         'contacts' => $contacts,
         'contacts_utilisables' => $contactsUtilisables,
+        'pret_materiel' => $pretMateriel,
         'csrf_token' => $_SESSION['csrf_employe']
     ]);
 

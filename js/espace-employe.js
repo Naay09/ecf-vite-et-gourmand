@@ -408,6 +408,112 @@ document.addEventListener('click', async function(event) {
 
         formulaireContact.dataset.csrfToken = resultat.csrf_token;
 
+         /* AFFICHER LE MATÉRIEL PRÊTÉ */
+
+        // Récupérer les éléments
+        const sectionPret = document.getElementById(
+            'employe-pret-section'
+        );
+
+        const boutonRestitution = document.getElementById(
+            'employe-confirmer-restitution'
+        );
+
+        const etatPret = document.getElementById(
+            'employe-pret-etat'
+        );
+
+        const ligneRetour = document.getElementById(
+            'employe-pret-retour-ligne'
+        );
+
+        // Réinitialiser l'affichage
+        sectionPret.classList.add('d-none');
+        ligneRetour.classList.add('d-none');
+
+        boutonRestitution.classList.add('d-none');
+        boutonRestitution.disabled = true;
+
+        delete boutonRestitution.dataset.commandeId;
+        delete boutonRestitution.dataset.csrfToken;
+
+        document.getElementById('employe-restitution-feedback')
+            .textContent = '';
+
+        // Récupérer le prêt de matériel
+        const pret = resultat.pret_materiel;
+
+        // Afficher la section uniquement si un prêt existe
+        if (pret) {
+
+            // Description du matériel
+            document.getElementById('employe-pret-description')
+                .textContent = pret.description;
+
+            // Date du prêt
+            const datePret = pret.date_pret
+                .substring(0, 10)
+                .split('-')
+                .reverse()
+                .join('/');
+
+            document.getElementById('employe-pret-date')
+                .textContent = datePret;
+
+            // Date limite de restitution
+            const dateLimite = pret.date_limite_retour
+                .split('-')
+                .reverse()
+                .join('/');
+
+            document.getElementById('employe-pret-date-limite')
+                .textContent = dateLimite;
+
+            // Vérifier si le matériel a été restitué
+            if (pret.date_retour !== null) {
+
+                // Afficher l'état "Matériel restitué"
+                etatPret.textContent = 'Matériel restitué';
+                etatPret.className = 'badge text-bg-success';
+
+                // Formater la date de restitution
+                const dateRetour = pret.date_retour
+                    .substring(0, 10)
+                    .split('-')
+                    .reverse()
+                    .join('/');
+
+                const heureRetour = pret.date_retour.substring(11, 16);
+
+                document.getElementById('employe-pret-date-retour')
+                    .textContent = dateRetour + ' à ' + heureRetour;
+
+                // Afficher la date de restitution
+                ligneRetour.classList.remove('d-none');
+
+            } else {
+
+                // Le matériel n'a pas encore été restitué
+                etatPret.textContent = 'En attente de restitution';
+                etatPret.className = 'badge text-bg-warning';
+
+                // Autoriser la restitution uniquement au bon statut
+                if (commande.statut_courant === 'en_attente_retour_materiel') {
+
+                    boutonRestitution.dataset.commandeId = commande.id;
+
+                    boutonRestitution.dataset.csrfToken =
+                        resultat.csrf_token;
+
+                    boutonRestitution.disabled = false;
+                    boutonRestitution.classList.remove('d-none');
+                }
+            }
+
+            // Afficher la section
+            sectionPret.classList.remove('d-none');
+        }
+
         /* RESTAURER LES CONTACTS ENREGISTRÉS */
 
         // Récupérer les contacts non utilisés depuis MySQL
@@ -518,6 +624,14 @@ document.addEventListener('click', async function(event) {
             '<option value="">Choisissez la prochaine étape</option>';
 
         boutonEnregistrer.disabled = true;
+
+        // Masquer les champs du matériel
+        document.getElementById('employe-materiel-champs')
+            .classList.add('d-none');
+
+        // Vider l'ancienne description
+        document.getElementById('employe-description-materiel')
+            .value = '';
 
         document.getElementById('employe-statut-feedback')
             .textContent = '';
@@ -721,19 +835,64 @@ document.addEventListener('input', function(event) {
 
 });
 
-// Activer le bouton lorsqu'un nouveau statut est sélectionné
+/* VÉRIFIER LE FORMULAIRE DE CHANGEMENT DE STATUT */
+
+function verifierChangementStatutEmploye() {
+
+    const selectStatut = document.getElementById(
+        'employe-nouveau-statut'
+    );
+
+    const sectionMateriel = document.getElementById(
+        'employe-materiel-champs'
+    );
+
+    const descriptionMateriel = document.getElementById(
+        'employe-description-materiel'
+    );
+
+    const bouton = document.getElementById(
+        'employe-enregistrer-statut'
+    );
+
+    const nouveauStatut = selectStatut.value;
+
+    // Vérifier si le nouveau statut nécessite un prêt
+    if (nouveauStatut === 'en_attente_retour_materiel') {
+
+        sectionMateriel.classList.remove('d-none');
+
+        // La description est obligatoire
+        bouton.disabled = descriptionMateriel.value.trim() === '';
+
+    } else {
+
+        sectionMateriel.classList.add('d-none');
+
+        descriptionMateriel.value = '';
+
+        // Un nouveau statut doit être sélectionné
+        bouton.disabled = nouveauStatut === '';
+    }
+}
+
+// Vérifier lorsque le statut change
 document.addEventListener('change', function(event) {
 
-    if (event.target.id !== 'employe-nouveau-statut') {
-        return;
+    if (event.target.id === 'employe-nouveau-statut') {
+        verifierChangementStatutEmploye();
     }
-
-    const bouton = document.getElementById('employe-enregistrer-statut');
-
-    bouton.disabled = event.target.value === '';
 
 });
 
+// Vérifier pendant la saisie de la description
+document.addEventListener('input', function(event) {
+
+    if (event.target.id === 'employe-description-materiel') {
+        verifierChangementStatutEmploye();
+    }
+
+});
 
 /* ENREGISTRER LE NOUVEAU STATUT */
 
@@ -758,6 +917,23 @@ document.addEventListener('click', async function(event) {
         return;
     }
 
+    // Récupérer la description du matériel
+    const descriptionMateriel = document.getElementById(
+        'employe-description-materiel'
+    ).value.trim();
+
+    // Vérifier la description si un prêt est nécessaire
+    if (
+        nouveauStatut === 'en_attente_retour_materiel' &&
+        descriptionMateriel === ''
+    ) {
+
+        feedback.textContent = 'Veuillez renseigner le matériel prêté.';
+        feedback.className = 'mt-3 text-danger';
+
+        return;
+    }
+
     // Désactiver le bouton pendant l'enregistrement
     bouton.disabled = true;
 
@@ -770,6 +946,12 @@ document.addEventListener('click', async function(event) {
     donnees.append('commande_id', commandeId);
     donnees.append('nouveau_statut', nouveauStatut);
     donnees.append('csrf_token', csrfToken);
+
+    // Ajouter la description uniquement en cas de prêt
+    if (nouveauStatut === 'en_attente_retour_materiel') {
+
+        donnees.append('description_materiel', descriptionMateriel);
+    }
 
     try {
 
@@ -1749,5 +1931,131 @@ document.addEventListener('click', async function(event) {
     }
 });
 
+
+/* CONFIRMER LA RESTITUTION DU MATÉRIEL */
+
+document.addEventListener('click', async function(event) {
+
+    // Vérifier le bouton concerné
+    if (event.target.id !== 'employe-confirmer-restitution') {
+        return;
+    }
+
+    const bouton = event.target;
+
+    // Empêcher les clics multiples
+    if (bouton.disabled) {
+        return;
+    }
+
+    const feedback = document.getElementById(
+        'employe-restitution-feedback'
+    );
+
+    // Récupérer les informations
+    const commandeId = bouton.dataset.commandeId;
+    const csrfToken = bouton.dataset.csrfToken;
+
+    if (!commandeId || !csrfToken) {
+
+        feedback.textContent = 'Informations de restitution manquantes.';
+        feedback.className = 'mt-3 text-danger';
+
+        return;
+    }
+
+    // Demander une confirmation à l'employé
+    const confirmation = window.confirm(
+        'Confirmez-vous que le matériel de la commande n°'
+        + commandeId + ' a bien été restitué ?'
+    );
+
+    if (!confirmation) {
+        return;
+    }
+
+    // Préparer les données
+    const donnees = new FormData();
+
+    donnees.append('commande_id', commandeId);
+    donnees.append('csrf_token', csrfToken);
+
+    // Désactiver le bouton
+    bouton.disabled = true;
+
+    feedback.textContent = 'Enregistrement de la restitution...';
+    feedback.className = 'mt-3 text-secondary';
+
+    let restitutionEnregistree = false;
+
+    try {
+
+        // Envoyer les informations à PHP
+        const reponse = await fetch('/api/confirmer-restitution.php', {
+            method: 'POST',
+            body: donnees
+        });
+
+        const resultat = await reponse.json();
+
+        // Vérifier la réponse de PHP
+        if (!reponse.ok || !resultat.success) {
+
+            feedback.textContent =
+                resultat.message || 'Impossible d’enregistrer la restitution.';
+
+            feedback.className = 'mt-3 text-danger';
+
+            // La demande a été refusée par PHP
+            bouton.disabled = false;
+
+            return;
+        }
+
+        // La restitution est enregistrée dans MySQL
+        restitutionEnregistree = true;
+
+        feedback.textContent = resultat.message;
+        feedback.className = 'mt-3 text-success';
+
+        // Actualiser les commandes et les indicateurs
+        await chargerCommandesEmploye();
+
+        // Retrouver le bouton de détail de la commande
+        const boutonsDetail = document.querySelectorAll(
+            '.btn-detail-employe'
+        );
+
+        for (const boutonDetail of boutonsDetail) {
+
+            if (boutonDetail.dataset.commandeId === commandeId) {
+
+                // Recharger le détail de la commande
+                boutonDetail.click();
+
+                break;
+            }
+        }
+
+    } catch (erreur) {
+
+        console.error(erreur);
+
+        if (restitutionEnregistree) {
+
+            feedback.textContent =
+                'La restitution est enregistrée, mais l’affichage n’a pas pu être actualisé.';
+
+        } else {
+
+            feedback.textContent =
+                'Impossible de confirmer le résultat. Rechargez la commande avant de réessayer.';
+        }
+
+        feedback.className = 'mt-3 text-danger';
+
+    }
+
+});
 
 
