@@ -117,6 +117,8 @@ async function actualiserNavigation() {
     const visiteur = document.getElementById('nav-visiteur');
     const connecte = document.getElementById('nav-connecte');
     const prenom = document.getElementById('nav-prenom');
+    const connecteMobile = document.getElementById('nav-connecte-mobile');
+    const prenomMobile = document.getElementById('nav-prenom-mobile');
 
     try {
 
@@ -132,6 +134,8 @@ async function actualiserNavigation() {
 
             visiteur.classList.add('d-none');
             connecte.classList.remove('d-none');
+            prenomMobile.textContent = session.prenom;
+            connecteMobile.classList.remove('d-none');
 
             prenom.textContent = session.prenom;
 
@@ -157,8 +161,10 @@ async function actualiserNavigation() {
 
             visiteur.classList.remove('d-none');
             connecte.classList.add('d-none');
+            connecteMobile.classList.add('d-none');
 
             prenom.textContent = '';
+            prenomMobile.textContent = '';
         }
 
     } catch (erreur) {
@@ -167,7 +173,10 @@ async function actualiserNavigation() {
 
         visiteur.classList.remove('d-none');
         connecte.classList.add('d-none');
+        connecteMobile.classList.add('d-none');
+
         prenom.textContent = '';
+        prenomMobile.textContent = '';
     }
 }
 

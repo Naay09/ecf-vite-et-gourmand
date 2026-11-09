@@ -285,6 +285,181 @@
                         class="list-group list-group-flush"
                     ></ul>
 
+                    <!-- FORMULAIRE D'AVIS CLIENT -->
+
+                    <form id="form-avis-client" class="d-none mt-4">
+
+                        <hr class="my-4">
+
+                        <h3 class="h5 mb-3">
+                            Donner votre avis
+                        </h3>
+
+                        <p class="text-muted mb-4">
+                            Votre commande est terminée.
+                            Partagez votre expérience avec Vite & Gourmand.
+                        </p>
+
+                        <!-- INFORMATIONS TECHNIQUES -->
+
+                        <input type="hidden" id="avis-commande-id" name="commande_id">
+
+                        <input type="hidden" id="avis-csrf-token" name="csrf_token">
+
+                        <!-- NOTE -->
+
+                        <fieldset class="mb-4">
+
+                            <legend class="form-label">Votre note *</legend>
+
+                            <div class="d-flex flex-wrap gap-3">
+
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="note"
+                                        id="avis-note-1"
+                                        value="1"
+                                        required
+                                    >
+                                    <label class="form-check-label" for="avis-note-1">1</label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="note"
+                                        id="avis-note-2"
+                                        value="2"
+                                    >
+                                    <label class="form-check-label" for="avis-note-2">2</label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="note"
+                                        id="avis-note-3"
+                                        value="3"
+                                    >
+                                    <label class="form-check-label" for="avis-note-3">3</label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="note"
+                                        id="avis-note-4"
+                                        value="4"
+                                    >
+                                    <label class="form-check-label" for="avis-note-4">4</label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="note"
+                                        id="avis-note-5"
+                                        value="5"
+                                    >
+                                    <label class="form-check-label" for="avis-note-5">5</label>
+                                </div>
+
+                            </div>
+
+                        </fieldset>
+
+                        <!-- COMMENTAIRE -->
+
+                        <div class="mb-4">
+
+                            <label for="avis-commentaire" class="form-label">Votre commentaire *</label>
+
+                            <textarea
+                                id="avis-commentaire"
+                                name="commentaire"
+                                class="form-control"
+                                rows="4"
+                                maxlength="1000"
+                                required
+                                placeholder="Comment s'est passée votre expérience ?"
+                            ></textarea>
+
+                            <p class="small text-muted mt-2">
+                                1000 caractères maximum.
+                            </p>
+
+                        </div>
+
+                        <p class="small text-muted">Votre avis sera publié après validation par notre équipe.</p>
+
+                        <div
+                            id="avis-client-feedback"
+                            class="mt-3"
+                            role="status"
+                            aria-live="polite"
+                        ></div>
+
+                        <!-- ENREGISTREMENT -->
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            id="avis-client-envoyer"
+                            disabled
+                        >
+                            Envoyer mon avis
+                        </button>
+
+                    </form>
+
+                    <!-- AVIS DÉJÀ DÉPOSÉ -->
+
+                    <section id="avis-client-existant" class="mt-4 d-none">
+
+                        <hr class="my-4">
+
+                        <h3 class="h5 mb-3">
+                            Votre avis
+                        </h3>
+
+                        <!-- NOTE -->
+
+                        <p class="mb-2">
+                            <strong>Note :</strong>
+                            <span id="avis-existant-note"></span>
+                            / 5
+                        </p>
+
+                        <!-- COMMENTAIRE -->
+
+                        <p class="mb-2">
+                            <strong>Commentaire :</strong>
+                        </p>
+
+                        <p
+                            id="avis-existant-commentaire"
+                            class="mb-3"
+                        ></p>
+
+                        <!-- MODÉRATION -->
+
+                        <p class="mb-0">
+                            <strong>État :</strong>
+
+                            <span
+                                id="avis-existant-moderation"
+                                class="badge"
+                            ></span>
+                        </p>
+
+                    </section>
+
                 </div>
 
                 <!-- FORMULAIRE DE MODIFICATION D'UNE COMMANDE -->
@@ -483,7 +658,7 @@
             <!-- Pied de la modale -->
             <div class="modal-footer">
 
-                <!-- Emplacement pour US_009 et US_010 -->
+                <!-- Emplacement pour les actions du détail de la commande -->
                 <div id="detail-commande-actions" class="d-flex gap-2"></div>
 
                 <button

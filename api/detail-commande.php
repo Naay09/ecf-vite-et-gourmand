@@ -88,11 +88,39 @@ try {
 
     $historique = $requete->fetchAll(PDO::FETCH_ASSOC);
 
+    /* VÉRIFIER SI UN AVIS EXISTE DÉJÀ */
+
+    // Préparer la requête
+    $requeteAvis = $dbConnection->prepare(
+        "SELECT
+            id,
+            note,
+            commentaire,
+            moderation
+        FROM avis
+        WHERE commande_id = :commande_id"
+    );
+
+    // Exécuter la requête
+    $requeteAvis->execute([
+        'commande_id' => $commande['id']
+    ]);
+
+    // Récupérer l'avis éventuel
+    $avis = $requeteAvis->fetch(PDO::FETCH_ASSOC);
+
+    // Créer le jeton CSRF si nécessaire
+    if (empty($_SESSION['csrf_compte'])) {
+        $_SESSION['csrf_compte'] = bin2hex(random_bytes(32));
+    }
+
     // Envoyer les informations à JavaScript
     echo json_encode([
         'success' => true,
         'commande' => $commande,
-        'historique' => $historique
+        'historique' => $historique,
+        'avis' => $avis,
+        'csrf_token' => $_SESSION['csrf_compte']
     ]);
 
 } catch (PDOException $erreur) {

@@ -102,13 +102,12 @@ async function chargerMesCommandes() {
 
             // Définir la couleur selon le statut
             if (
-                commande.statut_courant === 'accepté' ||
-                commande.statut_courant === 'livré' ||
-                commande.statut_courant === 'terminée'
+                commande.statut_courant === 'en_attente' ||
+                commande.statut_courant === 'en_attente_retour_materiel'
             ) {
-                statut.className = 'text-primary';
+                statut.classList.add('text-secondary');
             } else {
-                statut.className = 'text-secondary';
+                statut.classList.add('text-primary');
             }
 
             // Bouton pour consulter le détail
@@ -264,6 +263,107 @@ document.addEventListener('click', async function(event) {
         const commande = resultat.commande;
         const historique = resultat.historique;
 
+        
+        /* AFFICHER LE FORMULAIRE OU L'AVIS EXISTANT */
+
+        function afficherFormulaireAvis(commande, avis, csrfToken) {
+
+            const formulaire = document.getElementById('form-avis-client');
+
+            const avisExistant = document.getElementById(
+                'avis-client-existant'
+            );
+
+            const bouton = document.getElementById(
+                'avis-client-envoyer'
+            );
+
+            // Réinitialiser l'affichage
+            formulaire.classList.add('d-none');
+            avisExistant.classList.add('d-none');
+
+            // Réinitialiser le formulaire
+            formulaire.reset();
+
+            formulaire.dataset.envoiEnCours = 'non';
+            formulaire.dataset.avisEnvoye = 'non';
+
+            // Réactiver les champs
+            formulaire.querySelectorAll(
+                'input[name="note"], textarea[name="commentaire"]'
+            ).forEach(function(champ) {
+                champ.disabled = false;
+            });
+
+            bouton.disabled = true;
+            bouton.classList.remove('d-none');
+
+            document.getElementById('avis-client-feedback')
+                .textContent = '';
+
+            // Vérifier que la commande est terminée
+            if (commande.statut_courant !== 'terminee') {
+                return;
+            }
+
+            // CAS 1 : UN AVIS EXISTE DÉJÀ
+            if (avis) {
+
+                // Afficher la note
+                document.getElementById('avis-existant-note')
+                    .textContent = avis.note;
+
+                // Afficher le commentaire
+                document.getElementById('avis-existant-commentaire')
+                    .textContent = avis.commentaire;
+
+                // Récupérer l'élément de modération
+                const moderation = document.getElementById(
+                    'avis-existant-moderation'
+                );
+
+                // Adapter le texte selon l'état
+                if (avis.moderation === 'en_attente') {
+
+                    moderation.textContent = 'En attente de validation';
+                    moderation.className = 'badge text-bg-secondary';
+
+                } else if (avis.moderation === 'valide') {
+
+                    moderation.textContent = 'Avis publié';
+                    moderation.className = 'badge text-bg-success';
+
+                } else if (avis.moderation === 'refusee') {
+
+                    moderation.textContent = 'Avis non retenu';
+                    moderation.className = 'badge text-bg-danger';
+                }
+
+                // Afficher l'avis existant
+                avisExistant.classList.remove('d-none');
+
+                return;
+            }
+
+            // CAS 2 : AUCUN AVIS N'EXISTE
+
+            // Renseigner les informations techniques
+            document.getElementById('avis-commande-id')
+                .value = commande.id;
+
+            document.getElementById('avis-csrf-token')
+                .value = csrfToken;
+
+            // Afficher le formulaire de dépôt
+            formulaire.classList.remove('d-none');
+        }
+
+        // Afficher le formulaire si la commande peut recevoir un avis
+        afficherFormulaireAvis(
+            resultat.commande,
+            resultat.avis,
+            resultat.csrf_token
+        );
 
         // GÉRER LES ACTIONS DE LA COMMANDE
 
@@ -1060,7 +1160,220 @@ async function actualiserCommandeModifiee(commandeId) {
     feedback.className = 'mb-3 text-success';
 }
 
+/* AFFICHER LE FORMULAIRE D'AVIS */
 
+function afficherFormulaireAvis(commande, avis, csrfToken) {
+
+    const formulaire = document.getElementById('form-avis-client');
+
+    // Masquer le formulaire par défaut
+    formulaire.classList.add('d-none');
+
+    // Réinitialiser les champs
+    formulaire.reset();
+
+    // Désactiver le bouton
+    document.getElementById('avis-client-envoyer').disabled = true;
+
+    // Effacer les anciens messages
+    document.getElementById('avis-client-feedback')
+        .textContent = '';
+
+    // Vérifier que la commande est terminée
+    if (commande.statut_courant !== 'terminee') {
+        return;
+    }
+
+    // Vérifier qu'aucun avis n'existe déjà
+    if (avis) {
+        return;
+    }
+
+    // Renseigner les champs cachés
+    document.getElementById('avis-commande-id')
+        .value = commande.id;
+
+    document.getElementById('avis-csrf-token')
+        .value = csrfToken;
+
+    // Afficher le formulaire
+    formulaire.classList.remove('d-none');
+}
+
+/* VÉRIFIER LE FORMULAIRE D'AVIS */
+
+function verifierFormulaireAvis() {
+
+    const formulaire = document.getElementById('form-avis-client');
+
+    if (!formulaire) {
+        return;
+    }
+
+    const bouton = document.getElementById('avis-client-envoyer');
+
+    // Vérifier la note et le commentaire
+    const champsValides = formulaire.checkValidity();
+
+    // Vérifier que le commentaire n'est pas vide
+    const commentaire = document.getElementById(
+        'avis-commentaire'
+    ).value.trim();
+
+    // Vérifier les informations nécessaires à l'enregistrement
+    const commandeId = document.getElementById('avis-commande-id').value;
+    const csrfToken = document.getElementById('avis-csrf-token').value;
+
+    // Empêcher plusieurs envois
+    const envoiEnCours = formulaire.dataset.envoiEnCours === 'oui';
+    const avisEnvoye = formulaire.dataset.avisEnvoye === 'oui';
+
+    // Activer ou désactiver le bouton
+    bouton.disabled =
+        !champsValides ||
+        commentaire === '' ||
+        !commandeId ||
+        !csrfToken ||
+        envoiEnCours ||
+        avisEnvoye;
+}
+
+/* SURVEILLER LE FORMULAIRE D'AVIS */
+
+// Lorsqu'un champ est rempli
+document.addEventListener('input', function(event) {
+
+    if (event.target.closest('#form-avis-client')) {
+        verifierFormulaireAvis();
+    }
+
+});
+
+// Lorsqu'une note est sélectionnée
+document.addEventListener('change', function(event) {
+
+    if (event.target.closest('#form-avis-client')) {
+        verifierFormulaireAvis();
+    }
+
+});
+
+/* ENREGISTRER L'AVIS DU CLIENT */
+
+document.addEventListener('submit', async function(event) {
+
+    // Vérifier le formulaire concerné
+    if (event.target.id !== 'form-avis-client') {
+        return;
+    }
+
+    // Empêcher le rechargement de la page
+    event.preventDefault();
+
+    const formulaire = event.target;
+
+    const bouton = document.getElementById(
+        'avis-client-envoyer'
+    );
+
+    const feedback = document.getElementById(
+        'avis-client-feedback'
+    );
+
+    // Éviter les doubles envois
+    if (
+        formulaire.dataset.envoiEnCours === 'oui' ||
+        formulaire.dataset.avisEnvoye === 'oui'
+    ) {
+        return;
+    }
+
+    // Vérifier les champs avant l'envoi
+    if (!formulaire.reportValidity()) {
+        return;
+    }
+
+    const commentaire = document.getElementById(
+        'avis-commentaire'
+    ).value.trim();
+
+    if (commentaire === '') {
+
+        feedback.textContent = 'Veuillez rédiger un commentaire.';
+        feedback.className = 'mt-3 text-danger';
+
+        return;
+    }
+
+    // Préparer les données
+    const donnees = new FormData(formulaire);
+
+    // Utiliser le commentaire sans espaces inutiles
+    donnees.set('commentaire', commentaire);
+
+    // Désactiver le bouton pendant l'enregistrement
+    formulaire.dataset.envoiEnCours = 'oui';
+    bouton.disabled = true;
+
+    feedback.textContent = 'Enregistrement de votre avis...';
+    feedback.className = 'mt-3 text-secondary';
+
+    try {
+
+        // Envoyer les informations à PHP
+        const reponse = await fetch('/api/deposer-avis.php', {
+            method: 'POST',
+            body: donnees
+        });
+
+        const resultat = await reponse.json();
+
+        // Vérifier la réponse
+        if (!reponse.ok || !resultat.success) {
+
+            feedback.textContent =
+                resultat.message || 'Impossible d’enregistrer votre avis.';
+
+            feedback.className = 'mt-3 text-danger';
+
+            return;
+        }
+
+        // L'avis a été enregistré dans MySQL
+        formulaire.dataset.avisEnvoye = 'oui';
+
+        feedback.textContent = resultat.message;
+        feedback.className = 'mt-3 text-success';
+
+        // Masquer les champs pour empêcher une nouvelle saisie
+        formulaire.querySelectorAll(
+            'input[name="note"], textarea[name="commentaire"]'
+        ).forEach(function(champ) {
+
+            champ.disabled = true;
+
+        });
+
+        // Conserver le message de confirmation visible
+        bouton.classList.add('d-none');
+
+    } catch (erreur) {
+
+        console.error(erreur);
+
+        feedback.textContent =
+            'Impossible de confirmer l’enregistrement de votre avis. Rechargez le détail avant de réessayer.';
+
+        feedback.className = 'mt-3 text-danger';
+
+    } finally {
+
+        formulaire.dataset.envoiEnCours = 'non';
+        verifierFormulaireAvis();
+
+    }
+
+});
 
 // Chargement initial
 document.addEventListener('DOMContentLoaded', chargerMesCommandes);
