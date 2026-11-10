@@ -30,6 +30,7 @@ $description = $_POST['description'] ?? '';
 $themeId = $_POST['theme_id'] ?? '';
 $regimeId = $_POST['regime_id'] ?? '';
 $nbPersonnesMin = $_POST['nb_personnes_min'] ?? '';
+$stockDisponible = $_POST['stock_disponible'] ?? '';
 $prixPersonne = $_POST['prix_personne'] ?? '';
 $delaiCommande = $_POST['delai_commande_jours'] ?? '';
 $conditions = $_POST['conditions'] ?? '';
@@ -64,6 +65,7 @@ $valeurs = [
     $themeId,
     $regimeId,
     $nbPersonnesMin,
+    $stockDisponible,
     $prixPersonne,
     $delaiCommande,
     $conditions,
@@ -139,7 +141,23 @@ foreach ($entiers as $entier) {
     }
 }
 
-// Le délai peut être égal à zéro
+// Vérifier le stock disponible
+if (
+    !ctype_digit($stockDisponible) ||
+    (int) $stockDisponible > 2147483647
+) {
+
+    http_response_code(400);
+
+    echo json_encode([
+        'success' => false,
+        'message' => 'Le stock doit être un nombre entier positif ou égal à zéro.'
+    ]);
+
+    exit;
+}
+
+// Vérifier le délai
 if (
     !ctype_digit($delaiCommande)
 ) {
@@ -266,7 +284,7 @@ try {
         'regime_id' => $regimeId,
         'nb_personnes_min' => $nbPersonnesMin,
         'prix_personne' => $prixPersonne,
-        'stock_disponible' => 0,
+        'stock_disponible' => $stockDisponible,
         'conditions' => $conditions,
         'delai_commande_jours' => $delaiCommande
     ]);

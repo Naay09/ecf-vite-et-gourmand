@@ -15,6 +15,8 @@
 
         $prix = number_format($menu['prix_personne'], 0, ',', ' ');
 
+        $stockDisponible = (int) $menu['stock_disponible'];
+
     ?>
 
     <div class="col-12 col-md-6 col-lg-4">
@@ -64,7 +66,18 @@
 
                         <small>
                             <?= $regime ?> ·
-                            <?= (int) $menu['stock_disponible'] ?> disponibles
+
+                            <?php if ($stockDisponible > 0): ?>
+
+                                <?= $stockDisponible ?> disponibles
+
+                            <?php else: ?>
+
+                                <span class="text-danger fw-semibold">
+                                    Indisponible
+                                </span>
+
+                            <?php endif; ?>
                         </small>
 
                         <a

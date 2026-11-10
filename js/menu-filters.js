@@ -83,6 +83,27 @@ document.addEventListener('input', function(event) {
 
 });
 
+function actualiserCompteurMenus() {
+
+    const compteur = document.getElementById('menu-count');
+    const resultats = document.getElementById('menu-results');
+
+    if (!compteur || !resultats) {
+        return;
+    }
+
+    // Compter les cartes réellement affichées
+    const nombre = resultats.querySelectorAll('.menu-card').length;
+
+    if (nombre === 0) {
+        compteur.textContent = 'Aucun menu trouvé.';
+    } else {
+        compteur.textContent =
+            nombre +
+            (nombre === 1 ? ' menu à découvrir' : ' menus à découvrir');
+    }
+}
+
 // FILTRER LES MENUS
 
 async function filtrerMenus() {
@@ -137,11 +158,16 @@ async function filtrerMenus() {
 
         // Actualiser le catalogue
         resultats.innerHTML = html;
+        actualiserCompteurMenus();
 
     } catch (erreur) {
 
         resultats.textContent = 'Impossible de charger les menus.';
-
+        const compteur = document.getElementById('menu-count');
+        if (compteur) {
+            compteur.textContent = 'Nombre de menus indisponible.';
+        }
+        
         console.error(erreur);
     }
 }

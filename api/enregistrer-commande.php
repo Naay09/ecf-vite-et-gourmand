@@ -305,20 +305,24 @@ try {
         'compte_id' => $_SESSION['compte_id']
     ]);
 
-    // Réduire le stock d'une commande disponible
-    $requete = $dbConnection->prepare(
+    // Diminuer le stock uniquement s'il est disponible
+    $requeteStock = $dbConnection->prepare(
         "UPDATE menu
-         SET stock_disponible = stock_disponible - 1
-         WHERE id = :menu_id
-         AND stock_disponible > 0"
+        SET stock_disponible = stock_disponible - 1
+        WHERE id = :menu_id
+        AND stock_disponible > 0"
     );
 
-    $requete->execute([
+    $requeteStock->execute([
         'menu_id' => $menuId
     ]);
 
-    if ($requete->rowCount() !== 1) {
-        throw new RuntimeException('Stock indisponible.');
+    // Vérifier qu'une unité de stock a bien été retirée
+    if ($requeteStock->rowCount() === 0) {
+
+        throw new Exception(
+            'Ce menu est actuellement indisponible.'
+        );
     }
 
     // Valider toutes les opérations

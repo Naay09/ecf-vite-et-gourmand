@@ -598,6 +598,9 @@ document.addEventListener('show.bs.modal', async function(event) {
             // Image principale obligatoire à la création
             document.getElementById('gestion-menu-image-principale').required = true;
 
+            // Stock initial proposé pour un nouveau menu
+            document.getElementById('gestion-menu-stock').value = 0;
+
             feedback.textContent = '';
 
             bouton.disabled = false;
@@ -653,6 +656,13 @@ document.addEventListener('show.bs.modal', async function(event) {
 
         document.getElementById('gestion-menu-personnes').value =
             menu.nb_personnes_min;
+
+        document.getElementById('gestion-menu-stock').value =
+            menu.stock_disponible;
+        
+        // Mémoriser le stock avant modification
+        document.getElementById('gestion-menu-stock-initial').value =
+            menu.stock_disponible;
 
         document.getElementById('gestion-menu-prix').value =
             menu.prix_personne;

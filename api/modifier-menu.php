@@ -34,8 +34,12 @@ $themeId = $_POST['theme_id'] ?? '';
 $regimeId = $_POST['regime_id'] ?? '';
 
 $nbPersonnesMin = $_POST['nb_personnes_min'] ?? '';
-$prixPersonne = $_POST['prix_personne'] ?? '';
+$stockDisponible = $_POST['stock_disponible'] ?? '';
 
+// Stock au moment de l'ouverture du formulaire
+$stockInitial = $_POST['stock_initial'] ?? '';
+
+$prixPersonne = $_POST['prix_personne'] ?? '';
 $delaiCommande = $_POST['delai_commande_jours'] ?? '';
 $conditions = $_POST['conditions'] ?? '';
 
@@ -70,6 +74,8 @@ $valeurs = [
     $themeId,
     $regimeId,
     $nbPersonnesMin,
+    $stockDisponible,
+    $stockInitial,
     $prixPersonne,
     $delaiCommande,
     $conditions,
@@ -146,7 +152,50 @@ foreach ($entiers as $entier) {
     }
 }
 
-// Le délai peut être égal à zéro
+// Vérifier le stock disponible
+if (
+    !ctype_digit($stockDisponible) ||
+    filter_var(
+        $stockDisponible,
+        FILTER_VALIDATE_INT,
+        ['options' => ['min_range' => 0, 'max_range' => 2147483647]]
+    ) === false
+) {
+
+    http_response_code(400);
+
+    echo json_encode([
+        'success' => false,
+        'message' => 'Le stock doit être un nombre entier positif ou égal à zéro.'
+    ]);
+
+    exit;
+}
+
+// Vérifier le stock initial
+if (
+    !ctype_digit($stockInitial) ||
+    filter_var(
+        $stockInitial,
+        FILTER_VALIDATE_INT,
+        ['options' => [
+            'min_range' => 0,
+            'max_range' => 2147483647
+        ]]
+    ) === false
+) {
+
+    http_response_code(400);
+
+    echo json_encode([
+        'success' => false,
+        'message' => 'Stock initial invalide.'
+    ]);
+
+    exit;
+}
+
+// Vérifier le délai
 if (!ctype_digit($delaiCommande)) {
 
     http_response_code(400);
@@ -184,20 +233,34 @@ try {
 
     // Vérifier que le menu existe
     $requeteMenu = $dbConnection->prepare(
-        "SELECT id
-         FROM menu
-         WHERE id = :menu_id
-         FOR UPDATE"
+        "SELECT id, stock_disponible
+        FROM menu
+        WHERE id = :menu_id
+        FOR UPDATE"
     );
 
     $requeteMenu->execute([
         'menu_id' => $menuId
     ]);
+    
+    // Récupérer le menu et son stock actuel
+    $menu = $requeteMenu->fetch(PDO::FETCH_ASSOC);
 
-    if (!$requeteMenu->fetch()) {
+    if (!$menu) {
 
         throw new InvalidArgumentException(
             'Le menu est introuvable.'
+        );
+    }
+
+    // Comparer le stock actuel au stock initial
+    if ((int) $menu['stock_disponible'] !== (int) $stockInitial) {
+
+        throw new InvalidArgumentException(
+            'Le stock de ce menu a changé depuis ' .
+            'l’ouverture du formulaire. ' .
+            'Fermez la fenêtre et ouvrez-la de nouveau ' .
+            'pour récupérer le stock actuel.'
         );
     }
 
@@ -272,6 +335,7 @@ try {
             theme_id = :theme_id,
             regime_id = :regime_id,
             nb_personnes_min = :nb_personnes_min,
+            stock_disponible = :stock_disponible,
             prix_personne = :prix_personne,
             delai_commande_jours = :delai_commande_jours,
             conditions = :conditions
@@ -284,6 +348,7 @@ try {
         'theme_id' => $themeId,
         'regime_id' => $regimeId,
         'nb_personnes_min' => $nbPersonnesMin,
+        'stock_disponible' => $stockDisponible,
         'prix_personne' => $prixPersonne,
         'delai_commande_jours' => $delaiCommande,
         'conditions' => $conditions,

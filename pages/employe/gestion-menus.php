@@ -100,6 +100,13 @@
                         name="menu_id"
                     >
 
+                     <!-- Stock au moment de l'ouverture du formulaire -->
+                    <input
+                        type="hidden"
+                        id="gestion-menu-stock-initial"
+                        name="stock_initial"
+                    >
+
                     <!-- JETON CSRF -->
 
                     <input
@@ -227,6 +234,34 @@
 
                         </div>
 
+                        <!-- STOCK DISPONIBLE -->
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                for="gestion-menu-stock"
+                                class="form-label"
+                            >
+                                Stock disponible
+                            </label>
+
+                            <input
+                                type="number"
+                                id="gestion-menu-stock"
+                                name="stock_disponible"
+                                class="form-control"
+                                min="0"
+                                step="1"
+                                value="0"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <div class="row g-3 mb-3">
+
                         <div class="col-12 col-md-6">
 
                             <label
@@ -248,35 +283,30 @@
 
                         </div>
 
-                    </div>
+                        <!-- DÉLAI DE COMMANDE -->
 
-                    <!-- DÉLAI DE COMMANDE -->
+                        <div class="col-12 col-md-6">
 
-                    <div class="mb-3">
+                            <label
+                                for="gestion-menu-delai"
+                                class="form-label"
+                            >
+                                Délai minimum de commande (jours)
+                            </label>
 
-                        <label
-                            for="gestion-menu-delai"
-                            class="form-label"
-                        >
-                            Délai minimum de commande (jours)
-                        </label>
+                            <input
+                                type="number"
+                                id="gestion-menu-delai"
+                                name="delai_commande_jours"
+                                class="form-control"
+                                min="0"
+                                step="1"
+                                required
+                            >
 
-                        <input
-                            type="number"
-                            id="gestion-menu-delai"
-                            name="delai_commande_jours"
-                            class="form-control"
-                            min="0"
-                            step="1"
-                            required
-                        >
-
-                        <div class="form-text">
-                            Nombre de jours à respecter entre la
-                            commande et la date de prestation.
                         </div>
-
-                    </div>
+                        
+                    </div>    
 
                     <!-- COMPOSITION DU MENU -->
 
@@ -557,4 +587,3 @@
     </div>
 
 </div>
-

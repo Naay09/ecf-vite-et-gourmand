@@ -89,6 +89,7 @@ $categories = [
 
 $prix = number_format($menu['prix_personne'], 0, ',', ' ');
 $delai = (int) $menu['delai_commande_jours'];
+$stockDisponible = (int) $menu['stock_disponible'];
 ?>
 
 <div class="modal-header align-items-start">
@@ -209,25 +210,59 @@ $delai = (int) $menu['delai_commande_jours'];
 
         <p class="mb-0">
             <strong>Disponibilité :</strong>
-            <span id="menu-modal-stock"><?= (int) $menu['stock_disponible'] ?></span>
-            commandes
+
+            <span
+                id="menu-modal-stock"
+                class="<?= $stockDisponible === 0 ? 'text-danger fw-semibold' : '' ?>"
+            >
+                <?php if ($stockDisponible > 0): ?>
+
+                    <?= $stockDisponible ?> commandes disponibles
+
+                <?php else: ?>
+
+                    Indisponible
+
+                <?php endif; ?>
+            </span>
         </p>
+
     </div>
 </div>
 
+
 <!-- Action -->
 <div class="modal-footer justify-content-start">
-    <button
-        type="button"
-        class="btn btn-primary button px-4 py-3"
-        id="menu-modal-order"
-        data-menu-id="<?= (int) $menu['id'] ?>"
-    >
-        Commander ce menu
-        <i
-            class="bi bi-arrow-right ms-3"
-            aria-hidden="true"
-        ></i>
-    </button>
+
+    <?php if ($stockDisponible > 0): ?>
+
+        <!-- Menu disponible -->
+        <button
+            type="button"
+            class="btn btn-primary button px-4 py-3"
+            id="menu-modal-order"
+            data-menu-id="<?= (int) $menu['id'] ?>"
+        >
+            Commander ce menu
+
+            <i
+                class="bi bi-arrow-right ms-3"
+                aria-hidden="true"
+            ></i>
+        </button>
+
+    <?php else: ?>
+
+        <!-- Menu indisponible -->
+        <button
+            type="button"
+            class="btn btn-secondary px-4 py-3"
+            disabled
+        >
+            Menu indisponible
+        </button>
+
+    <?php endif; ?>
 
 </div>
+

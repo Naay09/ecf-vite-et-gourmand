@@ -24,6 +24,47 @@
     </div>
 </section>
 
+<!-- Cartes -->
+         <?php
+        $menus = [];
+        $erreurChargement = false;
+
+        try {
+            // Connexion à la base de données
+            require_once __DIR__ . '/../../config/db-connection.php';
+
+            // Récupération des menus
+            $sql = " SELECT
+                    m.id,
+                    m.titre,
+                    m.description,
+                    m.nb_personnes_min,
+                    m.prix_personne,
+                    m.stock_disponible,
+                    m.delai_commande_jours,
+                    m.conditions,
+                    t.nom AS theme,
+                    r.nom AS regime,
+                    i.url AS image_url,
+                    i.texte_alternatif
+                FROM menu AS m
+                JOIN theme AS t ON m.theme_id = t.id
+                JOIN regime AS r ON m.regime_id = r.id
+                LEFT JOIN image_menu AS i ON i.menu_id = m.id AND i.ordre = 0
+                ORDER BY m.id
+            ";
+
+            // Exécution de la requête
+            $menuQuery = $dbConnection->query($sql);
+            // Récupération des résultats
+            $menus = $menuQuery->fetchAll();
+
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            $erreurChargement = true;
+        }
+
+        ?>
 
 <section class="menu-catalogue" id="menu-section">
 
@@ -35,7 +76,23 @@
                 <div class="eyebrow">LA CARTE DU MOMENT</div>
                 <h2 class="mb-0">À votre <em>table.</em></h2>
             </div>
-            <p class="menu-count mb-0">6 menus à découvrir</p>
+            <p class="menu-count mb-0" id="menu-count" role="status">
+                <?php if ($erreurChargement): ?>
+
+                    Nombre de menus indisponible.
+
+                <?php elseif (count($menus) === 0): ?>
+
+                    Aucun menu trouvé.
+
+                <?php else: ?>
+
+                    <?= count($menus) ?>
+                    <?= count($menus) === 1 ? 'menu' : 'menus' ?>
+                    à découvrir
+
+                <?php endif; ?>
+            </p>
         </div>
 
         <!-- Filtres -->
@@ -205,47 +262,7 @@
 
     </div>    
                 
-        <!-- Cartes -->
-         <?php
-        $menus = [];
-        $erreurChargement = false;
-
-        try {
-            // Connexion à la base de données
-            require_once __DIR__ . '/../../config/db-connection.php';
-
-            // Récupération des menus
-            $sql = " SELECT
-                    m.id,
-                    m.titre,
-                    m.description,
-                    m.nb_personnes_min,
-                    m.prix_personne,
-                    m.stock_disponible,
-                    m.delai_commande_jours,
-                    m.conditions,
-                    t.nom AS theme,
-                    r.nom AS regime,
-                    i.url AS image_url,
-                    i.texte_alternatif
-                FROM menu AS m
-                JOIN theme AS t ON m.theme_id = t.id
-                JOIN regime AS r ON m.regime_id = r.id
-                LEFT JOIN image_menu AS i ON i.menu_id = m.id AND i.ordre = 0
-                ORDER BY m.id
-            ";
-
-            // Exécution de la requête
-            $menuQuery = $dbConnection->query($sql);
-            // Récupération des résultats
-            $menus = $menuQuery->fetchAll();
-
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            $erreurChargement = true;
-        }
-
-        ?>
+        
 
         <?php if ($erreurChargement): ?>
 
