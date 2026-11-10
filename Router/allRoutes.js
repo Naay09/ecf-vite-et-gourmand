@@ -16,6 +16,7 @@ export const allRoutes = [
     new Route("/commande","Page de commande","/pages/commandes/commande.php"),
     new Route("/espace-employe","Espace Employé","/pages/employe/espace-employe.php"),
     new Route("/gestion-plats","Gestion des plats | Vite & Gourmand","/pages/employe/gestion-plats.php"),
+    new Route("/gestion-menus","Gestion des menus | Vite & Gourmand","/pages/employe/gestion-menus.php"),
     
 ];
 

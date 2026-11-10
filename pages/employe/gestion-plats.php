@@ -3,6 +3,9 @@
 <section class="contact-form-section">
 
     <div class="heading">
+        <!-- RETOUR À L'ESPACE EMPLOYÉ -->
+        <a href="/espace-employe" class="d-inline-flex align-items-center gap-2 mb-4 text-decoration-none">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i>Retour à l'espace Employé</a>
 
         <div class="eyebrow">GESTION DES PLATS</div>
 
