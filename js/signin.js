@@ -62,11 +62,20 @@ document.addEventListener('submit', async function(event) {
 
             }
 
-            // CAS 2 : Un employé ou administrateur se connecte
-            else if (
-                resultat.role === 'employe' ||
-                resultat.role === 'administrateur'
-            ) {
+            // CAS 2 : Un administrateur se connecte
+            else if (resultat.role === 'administrateur') {
+
+                modale.addEventListener('hidden.bs.modal', function() {
+
+                    window.history.pushState({}, '', '/espace-admin');
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+
+                }, { once: true });
+
+            }
+
+            // CAS 3 : Un employé se connecte
+            else if (resultat.role === 'employe') {
 
                 modale.addEventListener('hidden.bs.modal', function() {
 
@@ -144,16 +153,37 @@ async function actualiserNavigation() {
 
             if (lienEspace) {
 
-                // Employé ou administrateur
-                if (
-                    session.role === 'employe' ||
-                    session.role === 'administrateur'
-                ) {
+                // Administrateur
+                if (session.role === 'administrateur') {
+                    lienEspace.href = '/espace-admin';
+
+                // Employé
+                } else if (session.role === 'employe') {
                     lienEspace.href = '/espace-employe';
 
+                // Client
                 } else {
-                    // Client
                     lienEspace.href = '/mon-compte';
+                }
+            }
+
+            // Adapter également le lien mobile
+            const lienMobile = prenomMobile.closest('a');
+
+            if (lienMobile) {
+
+                if (session.role === 'administrateur') {
+
+                    lienMobile.href = '/espace-admin';
+
+                } else if (session.role === 'employe') {
+
+                    lienMobile.href = '/espace-employe';
+
+                } else {
+
+                    lienMobile.href = '/mon-compte';
+
                 }
             }
 
