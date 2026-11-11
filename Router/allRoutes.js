@@ -17,6 +17,7 @@ export const allRoutes = [
     new Route("/espace-employe","Espace Employé","/pages/employe/espace-employe.php"),
     new Route("/gestion-plats","Gestion des plats | Vite & Gourmand","/pages/employe/gestion-plats.php"),
     new Route("/gestion-menus","Gestion des menus | Vite & Gourmand","/pages/employe/gestion-menus.php"),
+    new Route("/gestion-horaires","Gestion des horaires | Vite & Gourmand","/pages/employe/gestion-horaires.php"),
     
 ];
 
