@@ -3,22 +3,16 @@
 async function chargerEmployesAdmin() {
 
     // Récupérer le conteneur des employés
-    const conteneur = document.getElementById(
-        'gestion-employes-liste'
-    );
+    const conteneur = document.getElementById('gestion-employes-liste');
 
     // Vérifier que nous sommes sur la bonne page
     if (!conteneur) {
         return;
     }
 
-    const feedback = document.getElementById(
-        'gestion-employes-feedback'
-    );
+    const feedback = document.getElementById('gestion-employes-feedback');
 
-    const champCsrf = document.getElementById(
-        'employe-csrf'
-    );
+    const champCsrf = document.getElementById('employe-csrf');
 
     // Réinitialiser l'affichage
     conteneur.innerHTML = '';
@@ -29,8 +23,7 @@ async function chargerEmployesAdmin() {
     try {
 
         // Récupérer les employés depuis PHP
-        const reponse = await fetch(
-            '/api/employes-admin.php',
+        const reponse = await fetch('/api/employes-admin.php',
             {
                 cache: 'no-store'
             }
@@ -48,6 +41,11 @@ async function chargerEmployesAdmin() {
 
         // Conserver le jeton CSRF
         champCsrf.value = resultat.csrf_token;
+
+        // Activer la création des comptes employés
+        const boutonAjouter = document.getElementById('enregistrer-employe');
+
+        boutonAjouter.disabled = false;
 
         // Vérifier si des employés existent
         if (resultat.employes.length === 0) {
@@ -111,6 +109,7 @@ async function chargerEmployesAdmin() {
 
             bouton.type = 'button';
             bouton.dataset.employeId = employe.id;
+            bouton.dataset.nouveauStatut = actif ? '0' : '1';
 
             if (actif) {
 
@@ -126,9 +125,6 @@ async function chargerEmployesAdmin() {
 
                 bouton.textContent = 'Réactiver le compte';
             }
-
-            // Action disponible à une prochaine étape
-            bouton.disabled = true;
 
             // Assembler la carte
             corps.appendChild(titre);
@@ -155,22 +151,248 @@ async function chargerEmployesAdmin() {
     }
 }
 
+/* OUVRIR LA MODALE D'AJOUT D'UN EMPLOYÉ */
 
-/* CHARGER LA PAGE */
+document.addEventListener('show.bs.modal', function(event) {
 
-/* Premier chargement */
+    // Vérifier la modale concernée
+    if (event.target.id !== 'modal-ajouter-employe') {
+        return;
+    }
 
-document.addEventListener('DOMContentLoaded', function() {
+    const formulaire = document.getElementById(
+        'form-ajouter-employe'
+    );
 
-    chargerEmployesAdmin();
+    const feedback = document.getElementById(
+        'ajouter-employe-feedback'
+    );
+
+    // Conserver le jeton CSRF
+    const jeton = document.getElementById(
+        'employe-csrf'
+    ).value;
+
+    // Réinitialiser les champs
+    formulaire.reset();
+
+    // Restaurer le jeton de sécurité
+    document.getElementById('employe-csrf').value = jeton;
+
+    // Effacer les anciens messages
+    feedback.textContent = '';
+    feedback.className = '';
 
 });
 
 
-/* Navigation SPA */
+/* CRÉER UN COMPTE EMPLOYÉ */
 
-document.addEventListener('pageChargee', function() {
+document.addEventListener('submit', async function(event) {
 
-    chargerEmployesAdmin();
+    // Vérifier le formulaire concerné
+    if (event.target.id !== 'form-ajouter-employe') {
+        return;
+    }
+
+    // Empêcher le rechargement de la page
+    event.preventDefault();
+
+    const formulaire = event.target;
+
+    const bouton = document.getElementById('enregistrer-employe');
+
+    const feedback = document.getElementById('ajouter-employe-feedback');
+
+    // Empêcher les doubles envois
+    if (bouton.disabled) {
+        return;
+    }
+
+    // Vérifier les champs obligatoires
+    if (!formulaire.reportValidity()) {
+        return;
+    }
+
+    // Récupérer les données du formulaire
+    const donnees = new FormData(formulaire);
+
+    // Désactiver le bouton pendant l'enregistrement
+    bouton.disabled = true;
+
+    feedback.textContent = 'Création du compte en cours...';
+    feedback.className = 'text-secondary';
+
+    try {
+
+        // Envoyer les données à PHP
+        const reponse = await fetch('/api/creer-employe.php',
+            {
+                method: 'POST',
+                body: donnees
+            }
+        );
+
+        // Récupérer la réponse JSON
+        const resultat = await reponse.json();
+
+        // Vérifier si la création a réussi
+        if (!reponse.ok || !resultat.success) {
+
+            feedback.textContent =
+                resultat.message ||
+                'Impossible de créer le compte employé.';
+
+            feedback.className = 'text-danger';
+
+            bouton.disabled = false;
+
+            return;
+        }
+
+        // Fermer la modale
+        const elementModal = document.getElementById('modal-ajouter-employe');
+
+        const modal = bootstrap.Modal.getInstance(elementModal);
+
+        if (modal) {
+            modal.hide();
+        }
+
+        // Actualiser la liste des employés
+        await chargerEmployesAdmin();
+
+        // Afficher le résultat sur la page
+        const feedbackPage = document.getElementById(
+            'gestion-employes-feedback'
+        );
+
+        feedbackPage.textContent = resultat.message;
+
+        if (resultat.email_envoye) {
+
+            feedbackPage.className = 'mb-4 text-success';
+
+        } else {
+
+            feedbackPage.className = 'mb-4 text-warning';
+        }
+
+    } catch (erreur) {
+
+        console.error(erreur);
+
+        feedback.textContent =
+            'Impossible de confirmer la création du compte. ' +
+            'Vérifiez la liste des employés avant de réessayer.';
+
+        feedback.className = 'text-danger';
+
+    }
+});
+
+/* DÉSACTIVER OU RÉACTIVER UN COMPTE EMPLOYÉ */
+
+document.addEventListener('click', async function(event) {
+
+    // Vérifier le bouton concerné
+    const bouton = event.target.closest('.btn-statut-employe');
+
+    if (!bouton) {
+        return;
+    }
+
+    // Empêcher les doubles clics
+    if (bouton.disabled) {
+        return;
+    }
+
+    // Récupérer les informations du bouton
+    const employeId = bouton.dataset.employeId;
+    const nouveauStatut = bouton.dataset.nouveauStatut;
+
+    // Déterminer l'action demandée
+    let action = 'désactiver';
+
+    if (nouveauStatut === '1') {
+        action = 'réactiver';
+    }
+
+    // Récupérer le nom de l'employé
+    const carte = bouton.closest('.card');
+    const titre = carte.querySelector('.card-title');
+    const nomEmploye = titre.textContent;
+
+    // Demander confirmation
+    const confirmation = confirm('Voulez-vous vraiment ' + action + ' le compte de ' + nomEmploye + ' ?');
+
+    if (!confirmation) {
+        return;
+    }
+
+    const feedback = document.getElementById('gestion-employes-feedback');
+
+    const champCsrf = document.getElementById('employe-csrf');
+
+    // Préparer les données
+    const donnees = new FormData();
+
+    donnees.append('employe_id', employeId);
+    donnees.append('actif', nouveauStatut);
+    donnees.append('csrf_token', champCsrf.value);
+
+    // Désactiver le bouton pendant la requête
+    bouton.disabled = true;
+
+    feedback.textContent = 'Modification du compte en cours...';
+
+    feedback.className = 'mb-4 text-secondary';
+
+    try {
+
+        // Envoyer la modification à PHP
+        const reponse = await fetch('/api/modifier-statut-employe.php',
+            {
+                method: 'POST',
+                body: donnees
+            }
+        );
+
+        // Lire la réponse JSON
+        const resultat = await reponse.json();
+
+        // Vérifier le résultat
+        if (!reponse.ok || !resultat.success) {
+
+            feedback.textContent =
+                resultat.message ||
+                'Impossible de modifier le compte.';
+
+            feedback.className = 'mb-4 text-danger';
+
+            bouton.disabled = false;
+
+            return;
+        }
+
+        // Actualiser la liste des employés
+        await chargerEmployesAdmin();
+
+        // Afficher la confirmation
+        const feedbackPage = document.getElementById('gestion-employes-feedback');
+
+        feedbackPage.textContent = resultat.message;
+        feedbackPage.className = 'mb-4 text-success';
+
+    } catch (erreur) {
+
+        console.error(erreur);
+
+        feedback.textContent = 'Impossible de confirmer la modification. ' + 'Actualisez la liste avant de réessayer.';
+        feedback.className = 'mb-4 text-danger';
+    }
 
 });
+
+// Chargement des pages avec notre routeur
+document.addEventListener('pageChargee', function() {chargerEmployesAdmin();});

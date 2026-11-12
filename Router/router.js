@@ -145,6 +145,55 @@ const LoadContentPage = async () => {
         }
     }
 
+
+    // PROTÉGER L'ESPACE ADMINISTRATEUR
+
+    if (window.location.pathname === '/espace-admin') {
+
+        try {
+
+            // Vérifier la session PHP
+            const reponse = await fetch('/api/session.php', {
+                cache: 'no-store'
+            });
+
+            if (!reponse.ok) {
+                throw new Error('Session inaccessible');
+            }
+
+            const session = await reponse.json();
+
+            // Visiteur non connecté
+            if (!session.connecte) {
+
+                history.replaceState({}, '', '/');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+
+                return;
+            }
+
+            // Utilisateur non administrateur
+            if (session.role !== 'administrateur') {
+
+                history.replaceState({}, '', '/');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+
+                return;
+            }
+
+        } catch (erreur) {
+
+            console.error(erreur);
+
+            // Refuser l'accès si la vérification échoue
+            history.replaceState({}, '', '/');
+            window.dispatchEvent(new PopStateEvent('popstate'));
+
+            return;
+        }
+    }
+
+
   const path = window.location.pathname;
   // Récupération de l'URL actuelle
   const actualRoute = getRouteByUrl(path);

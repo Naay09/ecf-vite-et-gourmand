@@ -282,8 +282,6 @@ document.addEventListener('submit', async function(event) {
 
         feedback.className = 'mb-4 text-danger';
 
-        // Ne pas réactiver automatiquement le bouton :
-        // le serveur a peut-être déjà enregistré les données.
     }
 
 });
