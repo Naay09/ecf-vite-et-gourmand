@@ -170,6 +170,24 @@ try {
     // Valider toutes les modifications
     $dbConnection->commit();
 
+
+    // Synchroniser l'annulation avec MongoDB
+    try {
+
+        require_once __DIR__ . '/../includes/synchroniser-commande-mongodb.php';
+
+        synchroniserCommandeMongoDB($commandeId, $dbConnection);
+
+    } catch (Throwable $erreurMongo) {
+
+        // Ne pas annuler la commande MySQL en cas d'erreur MongoDB
+        error_log(
+            'Erreur synchronisation MongoDB commande ' .
+            $commandeId . ' : ' . $erreurMongo->getMessage()
+        );
+
+    }
+
     echo json_encode([
         'success' => true,
         'message' => 'Votre commande a bien été annulée.',

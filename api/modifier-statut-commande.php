@@ -256,6 +256,23 @@ try {
     // Valider les modifications
     $dbConnection->commit();
 
+// SYNCHRONISER LE NOUVEAU STATUT AVEC MONGODB
+
+try {
+
+    require_once __DIR__ . '/../includes/synchroniser-commande-mongodb.php';
+
+    synchroniserCommandeMongoDB($commandeId, $dbConnection);
+
+} catch (Throwable $erreurMongo) {
+
+    // Ne pas annuler le changement de statut dans MySQL
+    error_log(
+        'Erreur synchronisation MongoDB commande ' .
+        $commandeId . ' : ' . $erreurMongo->getMessage()
+    );
+
+}
     
 // ENVOYER UN E-MAIL SELON LE NOUVEAU STATUT
 

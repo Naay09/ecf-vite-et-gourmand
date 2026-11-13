@@ -325,10 +325,30 @@ try {
         );
     }
 
-    // Valider toutes les opérations
+    // Valider toutes les opérations MySQL
     $dbConnection->commit();
 
-    
+    // SYNCHRONISER LA COMMANDE AVEC MONGODB
+
+    try {
+
+        // Charger la fonction de synchronisation
+        require_once __DIR__ . '/../includes/synchroniser-commande-mongodb.php';
+
+        // Synchroniser la nouvelle commande
+        synchroniserCommandeMongoDB($commandeId, $dbConnection);
+
+    } catch (Throwable $erreur) {
+
+        // Enregistrer l'erreur sans annuler la commande MySQL
+        error_log(
+            'Erreur synchronisation MongoDB commande ' .
+            $commandeId . ' : ' . $erreur->getMessage()
+        );
+
+    }
+
+
     // ENVOYER L'E-MAIL DE CONFIRMATION
 
     require __DIR__ . '/../includes/mail-service.php';
