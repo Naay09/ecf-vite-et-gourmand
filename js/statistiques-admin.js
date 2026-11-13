@@ -2,7 +2,121 @@
 
 // Numéro du dernier chargement demandé
 let chargementStatistiques = 0;
+// Conserver le graphique pour pouvoir l'actualiser
+let graphiqueCommandesAdmin = null;
 
+/* AFFICHER LE GRAPHIQUE DES COMMANDES */
+
+function afficherGraphiqueCommandes(menus) {
+
+    // Récupérer le canvas
+    const canvas = document.getElementById(
+        'graphique-commandes'
+    );
+
+    if (!canvas) {
+        return;
+    }
+
+    // Supprimer l'ancien graphique s'il existe
+    if (graphiqueCommandesAdmin) {
+
+        graphiqueCommandesAdmin.destroy();
+
+        graphiqueCommandesAdmin = null;
+    }
+
+    // Préparer les noms des menus
+    const nomsMenus = menus.map(function(menu) {
+        return menu.titre;
+    });
+
+    // Préparer le nombre de commandes
+    const nombresCommandes = menus.map(function(menu) {
+        return Number(menu.nombre_commandes);
+    });
+
+    // Créer le graphique
+    graphiqueCommandesAdmin = new Chart(canvas, {
+
+        type: 'bar',
+
+        data: {
+
+            labels: nomsMenus,
+
+            datasets: [{
+                label: 'Nombre de commandes',
+                data: nombresCommandes,
+                backgroundColor: '#dc744f',
+                borderColor: '#d7b296',
+                borderWidth: 1,
+                borderRadius: 5
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+                    display: false
+                },
+
+                tooltip: {
+
+                    callbacks: {
+
+                        label: function(contexte) {
+
+                            const nombre = contexte.parsed.y;
+
+                            return nombre + (
+                                nombre > 1
+                                    ? ' commandes'
+                                    : ' commande'
+                            );
+                        }
+
+                    }
+
+                }
+
+            },
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    ticks: {
+                        precision: 0,
+                        stepSize: 1
+                    }
+
+                },
+
+                x: {
+
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 0
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+}
 
 /* CHARGER LES STATISTIQUES */
 
@@ -191,6 +305,9 @@ async function chargerStatistiquesAdmin() {
             tableau.appendChild(ligne);
         }
 
+        // Afficher le graphique avec les données MongoDB
+        afficherGraphiqueCommandes(resultat.menus);
+        
         // Effacer le message de chargement
         feedback.textContent = '';
         feedback.className = 'mb-4';

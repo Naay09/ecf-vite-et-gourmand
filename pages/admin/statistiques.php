@@ -128,13 +128,15 @@
 
                 <h3 class="h5 mb-3">Nombre de commandes par menu</h3>
 
-                <div id="stats-graphique-commandes">
+                <div id="stats-graphique-commandes" style="position: relative; height: 350px;">
 
-                    <p class="text-secondary mb-0">
-                        Le graphique sera affiché ici.
-                    </p>
+                <canvas
+                    id="graphique-commandes"
+                    role="img"
+                    aria-label="Graphique du nombre de commandes par menu">
+                </canvas>
 
-                </div>
+            </div>
 
             </div>
 
