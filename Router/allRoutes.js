@@ -20,6 +20,7 @@ export const allRoutes = [
     new Route("/gestion-horaires","Gestion des horaires | Vite & Gourmand","/pages/employe/gestion-horaires.php"),
     new Route("/espace-admin","Espace Administrateur","/pages/admin/espace-admin.php"),
     new Route("/gestion-employes","Gestion des employés | Vite & Gourmand","/pages/admin/gestion-employes.php"),
+    new Route("/statistiques","Statistiques | Vite & Gourmand","/pages/admin/statistiques.php"),
     
 ];
 

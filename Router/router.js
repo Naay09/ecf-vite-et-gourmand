@@ -95,9 +95,31 @@ const LoadContentPage = async () => {
         }
     }
 
-    // PROTÉGER L'ESPACE EMPLOYÉ
+    // PROTÉGER LES PAGES EMPLOYÉ ET ADMINISTRATEUR
 
-    if (window.location.pathname === '/espace-employe') {
+    // Pages accessibles aux employés et aux administrateurs
+    const pagesEmploye = [
+        '/espace-employe',
+        '/gestion-plats',
+        '/gestion-menus',
+        '/gestion-horaires'
+    ];
+
+    // Pages réservées aux administrateurs
+    const pagesAdmin = [
+        '/espace-admin',
+        '/gestion-employes',
+        '/statistiques'
+    ];
+
+    // Récupérer l'URL actuelle
+    const pageActuelle = window.location.pathname;
+
+    // Vérifier si la page est protégée
+    if (
+        pagesEmploye.includes(pageActuelle) ||
+        pagesAdmin.includes(pageActuelle)
+    ) {
 
         try {
 
@@ -112,7 +134,7 @@ const LoadContentPage = async () => {
 
             const session = await reponse.json();
 
-            // Visiteur non connecté
+            // Vérifier si l'utilisateur est connecté
             if (!session.connecte) {
 
                 history.replaceState({}, '', '/');
@@ -121,8 +143,9 @@ const LoadContentPage = async () => {
                 return;
             }
 
-            // Utilisateur sans autorisation
+            // Vérifier les droits sur les pages employé
             if (
+                pagesEmploye.includes(pageActuelle) &&
                 session.role !== 'employe' &&
                 session.role !== 'administrateur'
             ) {
@@ -133,47 +156,11 @@ const LoadContentPage = async () => {
                 return;
             }
 
-        } catch (erreur) {
-
-            console.error(erreur);
-
-            // Refuser l'accès si la vérification échoue
-            history.replaceState({}, '', '/');
-            window.dispatchEvent(new PopStateEvent('popstate'));
-
-            return;
-        }
-    }
-
-
-    // PROTÉGER L'ESPACE ADMINISTRATEUR
-
-    if (window.location.pathname === '/espace-admin') {
-
-        try {
-
-            // Vérifier la session PHP
-            const reponse = await fetch('/api/session.php', {
-                cache: 'no-store'
-            });
-
-            if (!reponse.ok) {
-                throw new Error('Session inaccessible');
-            }
-
-            const session = await reponse.json();
-
-            // Visiteur non connecté
-            if (!session.connecte) {
-
-                history.replaceState({}, '', '/');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-
-                return;
-            }
-
-            // Utilisateur non administrateur
-            if (session.role !== 'administrateur') {
+            // Vérifier les droits sur les pages administrateur
+            if (
+                pagesAdmin.includes(pageActuelle) &&
+                session.role !== 'administrateur'
+            ) {
 
                 history.replaceState({}, '', '/');
                 window.dispatchEvent(new PopStateEvent('popstate'));
