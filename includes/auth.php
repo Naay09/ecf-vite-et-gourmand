@@ -3,10 +3,8 @@
 // Vérifier la connexion et les autorisations
 function verifierAcces($rolesAutorises = []) {
 
-    // Démarrer la session si nécessaire
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+    // Démarrer une session sécurisée
+    require_once __DIR__ . '/session.php';
 
     // Vérifier si l'utilisateur est connecté
     if (!isset($_SESSION['compte_id'])) {
@@ -26,7 +24,7 @@ function verifierAcces($rolesAutorises = []) {
 
     // Vérifier le rôle actuel et l'état du compte
     $requete = $dbConnection->prepare(
-        'SELECT role, actif FROM compte WHERE id = :id'
+        'SELECT role, actif, mot_de_passe_hash FROM compte WHERE id = :id'
     );
 
     $requete->execute([
@@ -43,6 +41,31 @@ function verifierAcces($rolesAutorises = []) {
         echo json_encode([
             'success' => false,
             'message' => 'Compte non autorisé.'
+        ]);
+
+        exit;
+    }
+
+    // Vérifier si le mot de passe a changé depuis la connexion
+    $empreinteActuelle = hash('sha256', $compte['mot_de_passe_hash']);
+
+    if (
+        !isset($_SESSION['empreinte_mot_de_passe']) ||
+        !is_string($_SESSION['empreinte_mot_de_passe']) ||
+        !hash_equals(
+            $empreinteActuelle,
+            $_SESSION['empreinte_mot_de_passe']
+        )
+    ) {
+        // Invalider l'ancienne session
+        $_SESSION = [];
+        session_destroy();
+
+        http_response_code(401);
+
+        echo json_encode([
+            'success' => false,
+            'message' => 'Votre session a expiré. Veuillez vous reconnecter.'
         ]);
 
         exit;

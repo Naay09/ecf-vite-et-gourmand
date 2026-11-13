@@ -319,3 +319,17 @@ CREATE TABLE horaires (
          AND ouverture < fermeture)
     )
 );
+
+-- ==========================================
+-- TABLE : TENTATIVE_CONNEXION
+-- ==========================================
+
+CREATE TABLE tentative_connexion (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email_hash CHAR(64) NOT NULL,
+    adresse_ip VARCHAR(45) NOT NULL,
+    date_tentative DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_email_date (email_hash, date_tentative),
+    INDEX idx_ip_date (adresse_ip, date_tentative)
+);

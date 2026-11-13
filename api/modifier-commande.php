@@ -285,6 +285,22 @@ try {
     // Valider les modifications
     $dbConnection->commit();
 
+    // Synchroniser la commande avec MongoDB
+    try {
+
+        require __DIR__ . '/../includes/synchroniser-commande-mongodb.php';
+
+        synchroniserCommandeMongoDB((int) $commandeId, $dbConnection);
+
+    } catch (Throwable $erreurMongoDB) {
+
+        // Ne pas annuler une modification MySQL déjà validée
+        error_log(
+            'Erreur de synchronisation MongoDB : '
+            . $erreurMongoDB->getMessage()
+        );
+    }
+
     echo json_encode([
         'success' => true,
         'message' => 'Votre commande a été modifiée.',

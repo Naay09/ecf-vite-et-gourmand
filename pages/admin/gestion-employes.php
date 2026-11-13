@@ -13,7 +13,7 @@
 
         <h2>Les comptes <em>employés.</em></h2>
 
-        <p class="contact-form-note mb-4">Créez de nouveaux comptes employés et gérezleurs accès à l'application.</p>
+        <p class="contact-form-note mb-4">Créez de nouveaux comptes employés et gérez leurs accès à l'application.</p>
 
         <!-- Ajouter un employé -->
         <button

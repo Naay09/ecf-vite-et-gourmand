@@ -3,8 +3,8 @@
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
-// Démarrer ou récupérer la session existante
-session_start();
+// Démarrer une session PHP sécurisée
+require __DIR__ . '/../includes/session.php';
 
 // Vérifier si un utilisateur possède une session
 if (!isset($_SESSION['compte_id'])) {
@@ -27,7 +27,8 @@ try {
             nom,
             prenom,
             role,
-            actif
+            actif,
+            mot_de_passe_hash
          FROM compte
          WHERE id = :id"
     );
@@ -49,18 +50,57 @@ try {
 
             $parametres = session_get_cookie_params();
 
-            setcookie(
-                session_name(),
-                '',
-                time() - 42000,
-                $parametres['path'],
-                $parametres['domain'],
-                $parametres['secure'],
-                $parametres['httponly']
-            );
+            setcookie(session_name(), '', [
+                'expires' => time() - 42000,
+                'path' => $parametres['path'],
+                'domain' => $parametres['domain'],
+                'secure' => $parametres['secure'],
+                'httponly' => $parametres['httponly'],
+                'samesite' => $parametres['samesite']
+            ]);
         }
 
         // Détruire la session PHP
+        session_destroy();
+
+        echo json_encode([
+            'connecte' => false
+        ]);
+
+        exit;
+    }
+
+    // Vérifier si le mot de passe a changé depuis la connexion
+    $empreinteActuelle = hash('sha256', $compte['mot_de_passe_hash']);
+
+    if (
+        !isset($_SESSION['empreinte_mot_de_passe']) ||
+        !is_string($_SESSION['empreinte_mot_de_passe']) ||
+        !hash_equals(
+            $empreinteActuelle,
+            $_SESSION['empreinte_mot_de_passe']
+        )
+    ) {
+
+        // Vider les informations de session
+        $_SESSION = [];
+
+        // Supprimer le cookie de session
+        if (ini_get('session.use_cookies')) {
+
+            $parametres = session_get_cookie_params();
+
+            setcookie(session_name(), '', [
+                'expires' => time() - 3600,
+                'path' => $parametres['path'],
+                'domain' => $parametres['domain'],
+                'secure' => $parametres['secure'],
+                'httponly' => $parametres['httponly'],
+                'samesite' => $parametres['samesite']
+            ]);
+        }
+
+        // Détruire la session
         session_destroy();
 
         echo json_encode([

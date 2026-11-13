@@ -86,7 +86,7 @@ if (
     strlen($prenom) > 100 ||
     strlen($nom) > 100 ||
     strlen($email) > 254 ||
-    strlen($telephone) > 30 ||
+    strlen($telephone) > 20 ||
     strlen($adresse) > 255
 ) {
     http_response_code(400);

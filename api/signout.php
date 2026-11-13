@@ -17,8 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Récupérer la session
-session_start();
+// Récupérer la session sécurisée
+require __DIR__ . '/../includes/session.php';
 
 // Vider les informations de session
 $_SESSION = [];
@@ -28,15 +28,14 @@ if (ini_get('session.use_cookies')) {
 
     $parametres = session_get_cookie_params();
 
-    setcookie(
-        session_name(),
-        '',
-        time() - 3600,
-        $parametres['path'],
-        $parametres['domain'],
-        $parametres['secure'],
-        $parametres['httponly']
-    );
+    setcookie(session_name(), '', [
+        'expires' => time() - 3600,
+        'path' => $parametres['path'],
+        'domain' => $parametres['domain'],
+        'secure' => $parametres['secure'],
+        'httponly' => $parametres['httponly'],
+        'samesite' => $parametres['samesite']
+    ]);
 }
 
 // Détruire la session
