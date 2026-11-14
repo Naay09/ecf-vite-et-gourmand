@@ -59,7 +59,7 @@ L'application dispose de trois espaces adaptés aux différents profils d'utilis
 - PHP : traitement des requêtes, logique métier et gestion des sessions.
 - PDO : communication sécurisée avec la base de données MySQL.
 - API PHP : échanges de données entre l'interface et le serveur.
-- PHPMailer : envoi des e-mails via SMTP.
+- Mailtrap : envoi des e-mails via SMTP.
 
 ### Bases de données
 
@@ -166,7 +166,7 @@ Ce script doit être exécuté depuis un terminal avec une version de PHP dispos
 
 ### 6. Configuration des e-mails
 
-Les envois d'e-mails sont assurés par PHPMailer avec un serveur SMTP.
+Les envois d'e-mails sont assurés par Mailtrap avec un serveur SMTP.
 
 Les paramètres de connexion sont définis dans :
 
@@ -373,3 +373,87 @@ Dans l'espace administrateur, les statistiques combinent les deux sources de don
 L'administrateur peut filtrer les résultats par menu et par période.
 
 Les résultats sont présentés sous forme d'indicateurs, de tableau et de graphique avec Chart.js.
+
+## Déploiement en production
+
+L'application Vite et Gourmand est déployée sur la plateforme Railway et accessible à l'adresse suivante :
+
+**https://vite-et-gourmand-prod.up.railway.app/**
+
+### Hébergement et architecture
+
+L'environnement de production repose sur plusieurs services distincts :
+
+- Railway : hébergement et déploiement de l'application.
+- Railpack : installation des dépendances et construction de l'application.
+- FrankenPHP et Caddy : exécution du code PHP et gestion des requêtes HTTP.
+- MySQL : stockage des données relationnelles (utilisateurs, menus, plats, commandes, avis, etc.).
+- MongoDB : stockage des données utilisées pour les statistiques des commandes.
+- Mailtrap : gestion des e-mails transactionnels.
+
+Les services MySQL et MongoDB sont indépendants du service qui héberge l'application PHP.
+
+### Préparation de l'application
+
+Une copie du projet a été préparée spécifiquement pour son déploiement sur Railway.
+
+Plusieurs adaptations ont été nécessaires :
+
+- Configuration du serveur avec un fichier `Caddyfile`.
+- Création d'un script `start-container.sh` pour le démarrage de l'application.
+- Utilisation d'un dossier `public/` comme racine web.
+- Construction des fichiers publics avec `npm run build`.
+- Configuration des extensions PHP nécessaires, notamment `pdo_mysql` et `mongodb`.
+- Utilisation de variables d'environnement pour les informations de connexion et les paramètres sensibles.
+- Mise en place d'un volume persistant monté sur `/data` pour conserver les images téléversées.
+
+La configuration du déploiement est gérée avec Railway dans le fichier `.railway/railway.ts`.
+
+### Déploiement avec Railway CLI
+
+Le déploiement est effectué depuis une copie locale du projet, à l'aide de Railway CLI.
+
+Après avoir configuré le projet et le service cible, la commande suivante permet d'envoyer l'application :
+
+railway up "$(pwd)" --path-as-root --service vite-et-gourmand --environment production --verbose
+
+
+Railway prend ensuite en charge les différentes étapes de construction :
+
+1. Envoi et extraction des fichiers du projet.
+2. Installation des dépendances PHP avec Composer.
+3. Installation des dépendances JavaScript avec npm.
+4. Construction des fichiers publics avec `npm run build`.
+5. Préparation du serveur FrankenPHP et Caddy.
+6. Démarrage du service avec `/start-container.sh`.
+
+Un contrôle de santé est configuré sur la route `/healthz.php` afin de vérifier que l'application PHP répond.
+
+### Configuration des bases de données
+
+Les bases MySQL et MongoDB sont hébergées sur Railway.
+
+Les paramètres de connexion sont transmis à l'application à l'aide de variables d'environnement, sans enregistrer les identifiants directement dans les fichiers publics.
+
+MySQL conserve les données principales nécessaires au fonctionnement de l'application.
+
+MongoDB est utilisé pour les statistiques des commandes, notamment leur exploitation dans l'espace administrateur.
+
+### Adaptation de l'envoi des e-mails
+
+L'application utilise Mailtrap pour l'envoi des e-mails transactionnels.
+
+Lors du développement local, les e-mails étaient gérés à l'aide de Mailtrap avec le protocole SMTP**.
+
+Cependant, une difficulté est apparue lors du déploiement sur Railway : la configuration d'hébergement choisie ne permettait pas d'établir les connexions SMTP nécessaires.
+
+Pour résoudre ce problème, le système d'envoi a été adapté afin d'utiliser l'API HTTP de Mailtrap dans l'environnement de production.
+
+Cette solution permet de transmettre les demandes d'envoi via des requêtes HTTPS, sans dépendre d'une connexion SMTP.
+
+L'application dispose ainsi de deux modes d'envoi selon son environnement :
+
+| Développement local | Mailtrap / SMTP |
+| Production Railway | API HTTP Mailtrap |
+
+Les paramètres nécessaires à l'envoi sont configurés au moyen de variables d'environnement.
